@@ -9,7 +9,7 @@ namespace com.bloomberg.samples.rulemsx
         private string name;
         private Dictionary<string, DataPoint> dataPoints;
 
-        DataSet(string name)
+        internal DataSet(string name)
         {
             this.name = name;
             this.dataPoints = new Dictionary<string, DataPoint>();

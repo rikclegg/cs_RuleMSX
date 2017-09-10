@@ -4,7 +4,7 @@
 
         private string name;
 
-        RuleSet(string name) {
+        internal RuleSet(string name) {
             this.name = name;
         }
 
@@ -20,10 +20,10 @@
 
             foreach (Rule r in source.rules) {
 
-                if (r.getEvaluator().evaluate(dataSet)) {
+                if (r.GetEvaluator().Evaluate(dataSet)) {
 
-                    foreach (RuleAction a in r.getActions()) {
-                        a.execute(dataSet);
+                    foreach (RuleAction a in r.GetActions()) {
+                        a.Execute(dataSet);
                     }
                     executeRules(r, dataSet);
                 }

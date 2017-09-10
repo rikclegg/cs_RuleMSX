@@ -1,11 +1,13 @@
-﻿namespace com.bloomberg.samples.rulemsx {
+﻿using System.Collections.Generic;
+
+namespace com.bloomberg.samples.rulemsx {
 
     public class Rule : RuleContainer {
 
         private string name;
         private RuleEvaluator evaluator;
         private List<RuleAction> actions = new List<RuleAction>();
-        private List<String> dependencies = new List<String>();
+        private List<string> dependencies = new List<string>();
 
         public Rule(string name, RuleEvaluator evaluator)
         {
@@ -17,7 +19,7 @@
         {
             this.name = name;
             this.evaluator = evaluator;
-            this.actions.add(action);
+            this.actions.Add(action);
         }
 
         public string GetName()
@@ -37,7 +39,7 @@
 
         public void AddDependency(string dataPointName)
         {
-            this.dependencies.add(dataPointName);
+            this.dependencies.Add(dataPointName);
         }
     }
 }

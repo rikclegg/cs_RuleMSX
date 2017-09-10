@@ -4,7 +4,7 @@ namespace com.bloomberg.samples.rulemsx {
 
     public abstract class RuleContainer
     {
-        protected List<Rule> rules = new List<Rule>();
+        internal List<Rule> rules = new List<Rule>();
 
         public void AddRule(Rule newRule)
         {
@@ -20,7 +20,7 @@ namespace com.bloomberg.samples.rulemsx {
         {
             foreach (Rule r in this.rules)
             {
-                if (r.getName().equals(name)) return r;
+                if (r.GetName().Equals(name)) return r;
             }
             return null;
         }
