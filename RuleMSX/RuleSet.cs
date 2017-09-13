@@ -18,7 +18,6 @@ namespace com.bloomberg.samples.rulemsx {
 
         public void execute(DataSet dataSet) {
 
-            // Move Alpha rules into open
             foreach (Rule r in this.rules) {
                 open.Add(r);
             }
