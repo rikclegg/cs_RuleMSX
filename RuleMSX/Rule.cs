@@ -19,6 +19,11 @@ namespace com.bloomberg.samples.rulemsx {
         {
             this.name = name;
             this.evaluator = evaluator;
+            AddAction(action);
+        }
+
+        public void AddAction(RuleAction action)
+        {
             this.actions.Add(action);
         }
 
