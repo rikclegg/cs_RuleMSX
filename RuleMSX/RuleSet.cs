@@ -6,6 +6,7 @@ namespace com.bloomberg.samples.rulemsx {
 
         private string name;
         private List<Rule> open;
+        private List<WorkingRule> workingSet;
 
         internal RuleSet(string name) {
             this.name = name;
@@ -18,11 +19,24 @@ namespace com.bloomberg.samples.rulemsx {
 
         public void execute(DataSet dataSet) {
 
+            // Create WorkingSet
+            this.workingSet = new List<WorkingRule>();
+
+            // Create Working Rules
             foreach (Rule r in this.rules) {
-                open.Add(r);
+                WorkingRule wr = new WorkingRule(r, r.GetEvaluator(), r.GetActions());
+                r.setWorkingRule(wr);
+                this.workingSet.Add(wr);
             }
 
-            while(open.Count > 0) executeOpen(open, dataSet);
+            // Add child working rules to each working rule
+            foreach (WorkingRule wr in this.workingSet) {
+                foreach(Rule r in wr.getRule().GetRules()) {
+                    wr.addWorkingRule(r.getWorkingRule());
+                }
+            }
+
+            while (open.Count > 0) executeOpen(open, dataSet);
         }
 
         private void executeOpen(List<Rule> source, DataSet dataSet) {

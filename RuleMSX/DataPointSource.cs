@@ -3,10 +3,21 @@ using static com.bloomberg.samples.rulemsx.RuleMSX;
 
 namespace com.bloomberg.samples.rulemsx
 {
-    public interface DataPointSource
+
+    public abstract class DataPointSource
     {
-        Object GetValue();
-        DataPointState GetState();
-        void SetState(DataPointState state);
+        private DataPoint dataPoint;
+        public abstract object GetValue();
+        public void SetStale() {
+            if(this.dataPoint != null) this.dataPoint.refresh();
+        }
+
+        internal void setDataPoint(DataPoint dataPoint) {
+            this.dataPoint = dataPoint;
+        }
+
+        public DataPoint getDataPoint() {
+            return this.dataPoint;
+        }
     }
 }

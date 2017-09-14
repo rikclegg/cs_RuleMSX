@@ -2,9 +2,14 @@
 
 namespace com.bloomberg.samples.rulemsx {
 
-    public interface RuleEvaluator
+    public abstract class RuleEvaluator
     {
-        bool Evaluate(DataSet dataSet);
-        List<string> GetDependencies();
+        private List<string> dependantDataPointNames = new List<string>();
+
+        public abstract bool Evaluate(DataSet dataSet);
+        
+        public void addDependantDataPointName(string name) {
+            this.dependantDataPointNames.Add(name);
+        }
     }
 }

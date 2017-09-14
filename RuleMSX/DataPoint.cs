@@ -10,7 +10,7 @@ namespace com.bloomberg.samples.rulemsx
         private DataPointSource source;
         private DataSet dataSet;
 
-        public DataPoint(DataSet dataSet, string name)
+        internal DataPoint(DataSet dataSet, string name)
         {
             this.name = name;
             this.dataSet = dataSet;
@@ -24,7 +24,9 @@ namespace com.bloomberg.samples.rulemsx
 
         public void SetDataPointSource(DataPointSource source)
         {
+            source.setDataPoint(this);
             this.source = source;
+
         }
 
         public DataPointSource GetSource()
@@ -37,9 +39,8 @@ namespace com.bloomberg.samples.rulemsx
             return this.dataSet;
         }
 
-        public void AddDependency(DataPoint dependency)
-        {
-            this.dependencies.Add(dependency);
+        public void refresh() {
+
         }
     }
 }
