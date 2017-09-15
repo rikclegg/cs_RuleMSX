@@ -5,18 +5,26 @@ namespace com.bloomberg.samples.rulemsx {
     public class RuleSet : RuleContainer {
 
         private string name;
-        private List<Rule> open;
-        private List<WorkingRule> workingSet;
+        private ExecutionAgent executionAgent = null;
 
         internal RuleSet(string name) {
             this.name = name;
-            this.open = new List<Rule>();
         }
 
         public string getName() {
             return this.name;
         }
 
+        public void Execute(DataSet dataSet) {
+
+            if (this.executionAgent == null) {
+                this.executionAgent = new ExecutionAgent(this, dataSet);
+            } else {
+                this.executionAgent.addDataSet(dataSet);
+            }
+        }
+
+        /*
         public void execute(DataSet dataSet) {
 
             // Create WorkingSet
@@ -52,5 +60,6 @@ namespace com.bloomberg.samples.rulemsx {
 
             this.open = newOpen;
         }
+        */
     }
 }

@@ -40,7 +40,7 @@ namespace com.bloomberg.samples.rulemsx
         }
 
         public void refresh() {
-
+            // find all WorkingRules with a dependency on this datapoint and push those WorkingRules in OpenSet!!
         }
     }
 }
