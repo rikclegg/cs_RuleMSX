@@ -6,20 +6,34 @@ namespace com.bloomberg.samples.rulemsx
 {
     class ExecutionAgent {
 
+        static readonly object dataSetLock = new object();
+        static readonly object openSetLock = new object();
+        List<WorkingRule> workingSet = new List<WorkingRule>();
+        List<WorkingRule> openSetQueue = new List<WorkingRule>();
+        List<WorkingRule> openSet = new List<WorkingRule>();
+        Queue<DataSet> dataSetQueue = new Queue<DataSet>();
         Thread workingSetAgent;
         RuleSet ruleSet;
-        DataSet dataSet;
         volatile bool stop = false;
 
         internal ExecutionAgent(RuleSet ruleSet, DataSet dataSet) {
 
             this.ruleSet = ruleSet;
-            this.dataSet = dataSet;
+
+            addDataSet(dataSet);
 
             ThreadStart agent = new ThreadStart(WorkingSetAgent);
-            Thread executionAgent = new Thread(agent);
-            executionAgent.Start();
+            workingSetAgent = new Thread(agent);
+            workingSetAgent.Start();
 
+        }
+
+        internal void addDataSet (DataSet dataSet)
+        {
+            lock(dataSetLock)
+            {
+                dataSetQueue.Enqueue(dataSet);
+            }
         }
 
         internal void Stop() {
@@ -28,20 +42,62 @@ namespace com.bloomberg.samples.rulemsx
 
         internal void WorkingSetAgent() {
 
-            // Create WorkingSet
-            // Create WorkingRule for each Rule in RuleSet
-            // Collate datapoint references
-            // Register call-backs for DataPointSource state change -> stale
-            // Add alpha nodes to newOpenSet
-            // while newOpenSet.count > 0 
-            //    openset = newOpen
-            //    execute openset
-            //        create empty newOpenSet                      
-            //        for each working rule in openset
-            //          call evaluator
-            //            if evaluator = true
-            //                add each child workingrule to newOpenSet
-            //                execute all actions on current workingrule
+            while (!stop)
+            {
+
+                // Ingest any new DataSets
+                while (dataSetQueue.Count > 0)
+                {
+                    DataSet ds;
+                    lock (dataSetLock) {
+                        ds = dataSetQueue.Dequeue();
+                    }
+                    ingestDataSet(this.ruleSet, ds, null);
+                }
+
+                while (openSetQueue.Count > 0)
+                {
+
+                    lock (openSetLock)
+                    {
+                        openSet = openSetQueue;
+                        openSetQueue = new List<WorkingRule>();
+                    }
+
+                    foreach (WorkingRule wr in openSet)
+                    {
+                        if (wr.evaluator.Evaluate(wr.dataSet))
+                        {
+                            foreach (WorkingRule nwr in wr.workingRules) AddToOpenSetQueue(nwr);
+                            foreach (RuleAction a in wr.actions) a.Execute(wr.dataSet);
+                        }
+                    }
+                }
+            }
         }
+
+        private void ingestDataSet(RuleContainer rc, DataSet dataSet, WorkingRule parent)
+        {
+            // Create WorkingRule object for each DataPoint of each DataSet for each Rule in RuleSet.
+            foreach(Rule r in rc.GetRules())
+            {
+                WorkingRule wr = new WorkingRule(this, r, dataSet);
+                workingSet.Add(wr);
+                if (parent != null) parent.addWorkingRule(wr);
+                ingestDataSet(r, dataSet, wr);
+                if (rc is RuleSet)
+                {
+                    AddToOpenSetQueue(wr); // Add alpha nodes to openSet queue
+                }
+            }
+        }
+
+        internal void AddToOpenSetQueue(WorkingRule wr)
+        {
+            lock(openSetLock) {
+                if(!openSet.Contains(wr)) openSetQueue.Add(wr); //Only add working rule if it's not already in the queue
+            }
+        }
+
     }
 }

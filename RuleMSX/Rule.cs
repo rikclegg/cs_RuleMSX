@@ -7,8 +7,6 @@ namespace com.bloomberg.samples.rulemsx {
         private string name;
         private RuleEvaluator evaluator;
         private List<RuleAction> actions = new List<RuleAction>();
-        private List<string> dependencies = new List<string>();
-        private WorkingRule workingRule;
 
         public Rule(string name, RuleEvaluator evaluator)
         {
@@ -41,19 +39,6 @@ namespace com.bloomberg.samples.rulemsx {
         public List<RuleAction> GetActions()
         {
             return actions;
-        }
-
-        public void AddDependency(string dataPointName)
-        {
-            this.dependencies.Add(dataPointName);
-        }
-
-        internal void setWorkingRule(WorkingRule wr) {
-            this.workingRule = wr;
-        }
-
-        internal WorkingRule getWorkingRule() {
-            return this.workingRule;
         }
     }
 }

@@ -24,6 +24,11 @@ namespace com.bloomberg.samples.rulemsx {
             }
         }
 
+        public void Stop()
+        {
+            this.executionAgent.Stop();
+        }
+
         /*
         public void execute(DataSet dataSet) {
 

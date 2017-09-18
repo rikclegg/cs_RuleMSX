@@ -32,5 +32,11 @@ namespace com.bloomberg.samples.rulemsx
         {
             return dataPoints[name];
         }
+
+        public Dictionary<string, DataPoint> getDataPoints()
+        {
+            return this.dataPoints;
+        }
+
     }
 }

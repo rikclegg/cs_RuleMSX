@@ -6,7 +6,6 @@ namespace com.bloomberg.samples.rulemsx
     {
 
         private string name;
-        private List<DataPoint> dependencies;
         private DataPointSource source;
         private DataSet dataSet;
 
@@ -14,7 +13,6 @@ namespace com.bloomberg.samples.rulemsx
         {
             this.name = name;
             this.dataSet = dataSet;
-            this.dependencies = new List<DataPoint>();
         }
 
         public string GetName()
@@ -37,10 +35,6 @@ namespace com.bloomberg.samples.rulemsx
         public DataSet GetDataSet()
         {
             return this.dataSet;
-        }
-
-        public void refresh() {
-            // find all WorkingRules with a dependency on this datapoint and push those WorkingRules in OpenSet!!
         }
     }
 }

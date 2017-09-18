@@ -4,7 +4,7 @@ namespace com.bloomberg.samples.rulemsx {
 
     public abstract class RuleEvaluator
     {
-        private List<string> dependantDataPointNames = new List<string>();
+        internal List<string> dependantDataPointNames = new List<string>();
 
         public abstract bool Evaluate(DataSet dataSet);
         
