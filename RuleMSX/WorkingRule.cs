@@ -16,6 +16,7 @@ namespace com.bloomberg.samples.rulemsx
         internal List<WorkingRule> workingRules = new List<WorkingRule>();
 
         internal WorkingRule(ExecutionAgent agent, Rule rule, DataSet dataSet) {
+            Log.LogMessage(Log.LogLevels.DETAILED, "WorkingRule constructor for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
             this.agent = agent;
             this.rule = rule;
             this.dataSet = dataSet;
@@ -25,11 +26,15 @@ namespace com.bloomberg.samples.rulemsx
 
         private void dereference()
         {
+            Log.LogMessage(Log.LogLevels.DETAILED, "Dereferencing WorkingRule for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
+
             this.actions = rule.GetActions();
             this.evaluator = rule.GetEvaluator();
             
             foreach(string dependencyName in this.evaluator.dependantDataPointNames)
             {
+                Log.LogMessage(Log.LogLevels.DETAILED, "Connecting WorkingRule Dependencies for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
+
                 // Find this dependency in the current dataSet
                 DataPoint dp = this.dataSet.getDataPoint(dependencyName);
                 dp.GetSource().addRuleEventHandler(this);
@@ -41,11 +46,13 @@ namespace com.bloomberg.samples.rulemsx
         }
 
         internal void addWorkingRule(WorkingRule wr) {
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding child WorkingRule to Dependencies for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
             this.workingRules.Add(wr);
         }
 
         public void handleRuleEvent()
         {
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSet for " + rule.GetName() + " and DataSet: " + dataSet.getName());
             agent.AddToOpenSetQueue(this);
         }
     }

@@ -11,13 +11,14 @@ namespace com.bloomberg.samples.rulemsx
 
         internal DataSet(string name)
         {
+            Log.LogMessage(Log.LogLevels.DETAILED, "DataSet constructor: " + name);
             this.name = name;
             this.dataPoints = new Dictionary<string, DataPoint>();
         }
 
         public DataPoint addDataPoint(string name)
         {
-
+            Log.LogMessage(Log.LogLevels.BASIC, "Adding DataPoint: " + name + " to DataSet: " + this.name);
             DataPoint newDataPoint = new DataPoint(this, name);
             dataPoints.Add(name, newDataPoint);
             return newDataPoint;

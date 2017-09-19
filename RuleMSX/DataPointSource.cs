@@ -12,8 +12,10 @@ namespace com.bloomberg.samples.rulemsx
         public abstract object GetValue();
 
         public void SetStale() {
+            Log.LogMessage(Log.LogLevels.DETAILED, "SetState called for DataPointSource of DataPoint: " + this.dataPoint.GetName());
             foreach (RuleEventHandler h in ruleEventHandlers)
             {
+                Log.LogMessage(Log.LogLevels.DETAILED, "Firing rule event handler");
                 h.handleRuleEvent();
             }
         }
@@ -27,6 +29,7 @@ namespace com.bloomberg.samples.rulemsx
         }
 
         internal void addRuleEventHandler(RuleEventHandler handler) {
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding rule event handler for : " + this.dataPoint.GetName());
             this.ruleEventHandlers.Add(handler);
         }
     }

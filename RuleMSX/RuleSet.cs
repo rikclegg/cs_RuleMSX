@@ -8,6 +8,7 @@ namespace com.bloomberg.samples.rulemsx {
         private ExecutionAgent executionAgent = null;
 
         internal RuleSet(string name) {
+            Log.LogMessage(Log.LogLevels.DETAILED, "RuleSet constructor: " + name);
             this.name = name;
         }
 
@@ -17,54 +18,22 @@ namespace com.bloomberg.samples.rulemsx {
 
         public void Execute(DataSet dataSet) {
 
+            Log.LogMessage(Log.LogLevels.BASIC, "Execute RuleSet " + this.name + " with DataSet " + dataSet.getName());
+
             if (this.executionAgent == null) {
+                Log.LogMessage(Log.LogLevels.DETAILED, "First execution, creating ExecutionAgent");
                 this.executionAgent = new ExecutionAgent(this, dataSet);
             } else {
+                Log.LogMessage(Log.LogLevels.DETAILED, "RuleSet already has ExecutionAgent, adding DataSet " + dataSet.getName());
                 this.executionAgent.addDataSet(dataSet);
             }
         }
 
         public void Stop()
         {
-            this.executionAgent.Stop();
+            
+            Log.LogMessage(Log.LogLevels.BASIC, "Stoping ExecutionAgent for RuleSet " + this.name);
+            if(this.executionAgent != null) this.executionAgent.Stop();
         }
-
-        /*
-        public void execute(DataSet dataSet) {
-
-            // Create WorkingSet
-            this.workingSet = new List<WorkingRule>();
-
-            // Create Working Rules
-            foreach (Rule r in this.rules) {
-                WorkingRule wr = new WorkingRule(r, r.GetEvaluator(), r.GetActions());
-                r.setWorkingRule(wr);
-                this.workingSet.Add(wr);
-            }
-
-            // Add child working rules to each working rule
-            foreach (WorkingRule wr in this.workingSet) {
-                foreach(Rule r in wr.getRule().GetRules()) {
-                    wr.addWorkingRule(r.getWorkingRule());
-                }
-            }
-
-            while (open.Count > 0) executeOpen(open, dataSet);
-        }
-
-        private void executeOpen(List<Rule> source, DataSet dataSet) {
-
-            List<Rule> newOpen = new List<Rule>();
-
-            foreach (Rule r in source) {
-                if (r.GetEvaluator().Evaluate(dataSet)) {
-                    foreach (Rule c in r.rules) newOpen.Add(c);
-                    foreach (RuleAction a in r.GetActions()) a.Execute(dataSet);
-                }
-            }
-
-            this.open = newOpen;
-        }
-        */
     }
 }

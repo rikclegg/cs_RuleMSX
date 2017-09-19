@@ -11,6 +11,7 @@ namespace com.bloomberg.samples.rulemsx
 
         internal DataPoint(DataSet dataSet, string name)
         {
+            Log.LogMessage(Log.LogLevels.DETAILED, "DataPoint constructor: " + name);
             this.name = name;
             this.dataSet = dataSet;
         }

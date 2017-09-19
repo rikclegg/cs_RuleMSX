@@ -8,6 +8,15 @@ namespace com.bloomberg.samples.rulemsx {
 
         public void AddRule(Rule newRule)
         {
+            if (this is RuleSet) {
+                RuleSet rs = (RuleSet)this;
+                Log.LogMessage(Log.LogLevels.DETAILED, "Adding child Rule: " + newRule.GetName() + " to RuleSet: " + rs.getName());
+            } else
+            {
+                Rule r = (Rule)this;
+                Log.LogMessage(Log.LogLevels.DETAILED, "Adding child Rule: " + newRule.GetName() + " to Rule: " + r.GetName());
+            }
+
             rules.Add(newRule);
         }
 
