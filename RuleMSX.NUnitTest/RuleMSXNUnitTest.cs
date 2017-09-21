@@ -85,7 +85,7 @@ namespace RuleMSXNUnitTest
         }
 
         [Test]
-        public void RuleMSXSTopShouldReturnTrueWithNoRuleSets()
+        public void RuleMSXStopShouldReturnTrueWithNoRuleSets()
         {
             RuleMSX rmsx = new RuleMSX();
             Assert.That(rmsx.Stop(), Is.EqualTo(true));
@@ -217,6 +217,57 @@ namespace RuleMSXNUnitTest
             RuleSet rs = rmsx.getRuleSet("SomeOtherName");
             Assert.IsNull(rs);
         }
+
+        [Test]
+        public void GetDataSetsReturnsDataSetCollection()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            rmsx.createDataSet(newDataSetName);
+            List<DataSet> dsl = rmsx.getDataSets();
+            DataSet ds = dsl[0];
+            Assert.That(ds.getName(), Is.EqualTo(newDataSetName));
+        }
+
+        [Test]
+        public void GetRuleSetsReturnsRuleSetCollection()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newRuleSetName = "NewRuleSet";
+            rmsx.createRuleSet(newRuleSetName);
+            List<RuleSet> rsl = rmsx.getRuleSets();
+            RuleSet rs = rsl[0];
+            Assert.That(rs.getName(), Is.EqualTo(newRuleSetName));
+        }
+
+        [Test]
+        public void GetDataPointsReturnsCorrectDictOfPoints()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            string newDataPointName = "NewDataPointName";
+            DataSet ds = rmsx.createDataSet(newDataSetName);
+            DataPoint dpi = ds.addDataPoint(newDataPointName);
+            Dictionary<string, DataPoint> dpd = ds.getDataPoints();
+            DataPoint dso;
+            dpd.TryGetValue(newDataPointName, out dso);
+            Assert.That(dso.GetName(), Is.EqualTo(newDataPointName));
+        }
+
+        [Test]
+        public void GetRulesReturnsCorrectDictOfRules()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            string newDataPointName = "NewDataPointName";
+            DataSet ds = rmsx.createDataSet(newDataSetName);
+            DataPoint dpi = ds.addDataPoint(newDataPointName);
+            Dictionary<string, DataPoint> dpd = ds.getDataPoints();
+            DataPoint dso;
+            dpd.TryGetValue(newDataPointName, out dso);
+            Assert.That(dso.GetName(), Is.EqualTo(newDataPointName));
+        }
+
     }
 }
 
