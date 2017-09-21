@@ -177,6 +177,46 @@ namespace RuleMSXNUnitTest
             DataPoint dp1 = ds.addDataPoint(newDataPointName);
             Assert.That(dp1.GetName(), Is.EqualTo(newDataPointName));
         }
+
+        [Test]
+        public void GetDataSetByNameReturnsCorrectDataSet()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            rmsx.createDataSet(newDataSetName);
+            DataSet ds = rmsx.getDataSet(newDataSetName);
+            Assert.That(ds.getName(), Is.EqualTo(newDataSetName));
+        }
+
+        [Test]
+        public void GetRuleSetByNameReturnsCorrectRuleSet()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newRuleSetName = "NewRuleSet";
+            rmsx.createRuleSet(newRuleSetName);
+            RuleSet rs = rmsx.getRuleSet(newRuleSetName);
+            Assert.That(rs.getName(), Is.EqualTo(newRuleSetName));
+        }
+
+        [Test]
+        public void GetDataSetWithIncorrectNameReturnsNull()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            rmsx.createDataSet(newDataSetName);
+            DataSet ds = rmsx.getDataSet("SomeOtherName");
+            Assert.IsNull(ds);
+        }
+
+        [Test]
+        public void GetRuleSetWithIncorrectNameReturnsNull()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newRuleSetName = "NewRuleSet";
+            rmsx.createRuleSet(newRuleSetName);
+            RuleSet rs = rmsx.getRuleSet("SomeOtherName");
+            Assert.IsNull(rs);
+        }
     }
 }
 
