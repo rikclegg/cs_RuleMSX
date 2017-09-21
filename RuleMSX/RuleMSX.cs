@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace com.bloomberg.samples.rulemsx
 {
@@ -28,6 +29,7 @@ namespace com.bloomberg.samples.rulemsx
         public DataSet createDataSet(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating DataSet: " + name);
+            if (name == null || name == "") throw new ArgumentException("DataSet name cannot be null or empty");
             DataSet newDataSet = new DataSet(name);
             Log.LogMessage(Log.LogLevels.DETAILED, "Adding new DataSet " + newDataSet.getName() + " to DataSets list.");
             dataSets.Add(newDataSet);
@@ -38,6 +40,7 @@ namespace com.bloomberg.samples.rulemsx
         public RuleSet createRuleSet(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating RuleSet: " + name);
+            if (name == null || name == "") throw new ArgumentException("DataSet name cannot be null or empty");
             RuleSet newRuleSet = new RuleSet(name);
             Log.LogMessage(Log.LogLevels.DETAILED, "Adding new RuleSet " + newRuleSet.getName() + " to RuleSets list.");
             ruleSets.Add(newRuleSet);
@@ -57,14 +60,18 @@ namespace com.bloomberg.samples.rulemsx
             return this.ruleSets;
         }
 
-        public void Stop()
+        public bool Stop()
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Stopping all RuleSet agents.");
+            bool result = true;
+
             foreach (RuleSet rs in this.ruleSets)
             {
                 Log.LogMessage(Log.LogLevels.DETAILED, "Stopping RuleSet: " + rs.getName());
-                rs.Stop();
+                if (!rs.Stop()) result = false;
             }
+
+            return result;
         }
     }
 }

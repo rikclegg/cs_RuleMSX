@@ -43,9 +43,18 @@ namespace com.bloomberg.samples.rulemsx
             }
         }
 
-        internal void Stop() {
+        internal bool Stop() {
             Log.LogMessage(Log.LogLevels.DETAILED, "Stoping thread for WorkingSetAgent for RuleSet: " + ruleSet.getName());
             this.stop = true;
+            try
+            {
+                workingSetAgent.Join();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
 
         internal void WorkingSetAgent() {

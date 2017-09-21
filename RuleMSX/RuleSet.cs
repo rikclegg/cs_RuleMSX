@@ -29,11 +29,11 @@ namespace com.bloomberg.samples.rulemsx {
             }
         }
 
-        public void Stop()
+        public bool Stop()
         {
-            
             Log.LogMessage(Log.LogLevels.BASIC, "Stoping ExecutionAgent for RuleSet " + this.name);
-            if(this.executionAgent != null) this.executionAgent.Stop();
+            if(this.executionAgent != null) return (this.executionAgent.Stop());
+            else return true;
         }
     }
 }
