@@ -60,6 +60,23 @@ namespace com.bloomberg.samples.rulemsx
             return this.ruleSets;
         }
 
+        public RuleSet getRuleSet(string name)
+        {
+            foreach(RuleSet rs in ruleSets) {
+                if (rs.getName().Equals(name)) return rs;
+            }
+            return null;
+        }
+
+        public DataSet getDataSet(string name)
+        {
+            foreach (DataSet ds in dataSets)
+            {
+                if (ds.getName().Equals(name)) return ds;
+            }
+            return null;
+        }
+
         public bool Stop()
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Stopping all RuleSet agents.");
