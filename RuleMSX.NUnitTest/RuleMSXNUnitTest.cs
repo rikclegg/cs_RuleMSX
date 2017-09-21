@@ -95,9 +95,12 @@ namespace RuleMSXNUnitTest
         public void RuleMSXStopShouldReturnTrueWithActiveRuleSet()
         {
             RuleMSX rmsx = new RuleMSX();
-            RuleSet rs = rmsx.createRuleSet("TestRuleSet");
-            Rule r = new Rule("Rule1", new GenericRule(true));
-            DataSet ds = rmsx.createDataSet("TestDataSet");
+            string newRuleSetName = "NewRuleSet";
+            string newDataSetName = "NewDataSet";
+            string newRuleName = "Rule1";
+            RuleSet rs = rmsx.createRuleSet(newRuleSetName);
+            Rule r = new Rule(newRuleName, new GenericRule(true));
+            DataSet ds = rmsx.createDataSet(newDataSetName);
             rs.AddRule(r);
             rs.Execute(ds);
             Assert.That(rmsx.Stop(), Is.EqualTo(true));
@@ -122,9 +125,12 @@ namespace RuleMSXNUnitTest
         public void RuleMSXStopShouldReturnTrueWithUnexecutedRuleSet()
         {
             RuleMSX rmsx = new RuleMSX();
-            RuleSet rs = rmsx.createRuleSet("TestRuleSet");
-            Rule r = new Rule("Rule1", new GenericRule(true));
-            DataSet ds = rmsx.createDataSet("TestDataSet");
+            string newRuleSetName = "NewRuleSet";
+            string newDataSetName = "NewDataSet";
+            string newRuleName = "Rule1";
+            RuleSet rs = rmsx.createRuleSet(newRuleSetName);
+            Rule r = new Rule(newRuleName, new GenericRule(true));
+            DataSet ds = rmsx.createDataSet(newDataSetName);
             rs.AddRule(r);
             // We are deliberately not executing the ruleset...
             //rs.Execute(ds);
@@ -135,8 +141,41 @@ namespace RuleMSXNUnitTest
         public void RuleSetGetNameShouldReturnName()
         {
             RuleMSX rmsx = new RuleMSX();
-            RuleSet rs = rmsx.createRuleSet("TestRuleSet");
-            Assert.That(rs.getName(), Is.EqualTo("TestRuleSet"));                   
+            string newRuleSetName = "NewRuleSet";
+            RuleSet rs = rmsx.createRuleSet(newRuleSetName);
+            Assert.That(rs.getName(), Is.EqualTo(newRuleSetName));                   
+        }
+
+        [Test]
+        public void DataSetGetNameShouldReturnName()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            DataSet ds = rmsx.createDataSet(newDataSetName);
+            Assert.That(ds.getName(), Is.EqualTo(newDataSetName));
+        }
+
+        [Test]
+        public void RuleSetAddRuleGetRuleShouldReturnNewRule()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newRuleSetName = "NewRuleSet";
+            string newRuleName = "Rule1";
+            RuleSet rs = rmsx.createRuleSet(newRuleSetName);
+            Rule r = new Rule(newRuleName, new GenericRule(true));
+            rs.AddRule(r);
+            Assert.That(rs.GetRule(newRuleName).GetName(), Is.EqualTo(newRuleName));
+        }
+
+        [Test]
+        public void DataSetAddDataPointReturnsNewDataPoint()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            string newDataPointName = "DataPoint1";
+            DataSet ds = rmsx.createDataSet(newDataSetName);
+            DataPoint dp1 = ds.addDataPoint(newDataPointName);
+            Assert.That(dp1.GetName(), Is.EqualTo(newDataPointName));
         }
     }
 }
