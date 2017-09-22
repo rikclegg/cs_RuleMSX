@@ -25,7 +25,6 @@ namespace com.bloomberg.samples.rulemsx
         {
             source.setDataPoint(this);
             this.source = source;
-
         }
 
         public DataPointSource GetSource()
