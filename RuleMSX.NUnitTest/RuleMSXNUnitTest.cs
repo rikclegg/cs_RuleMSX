@@ -312,6 +312,20 @@ namespace RuleMSXNUnitTest
         }
 
         [Test]
+        public void SetDataPointSourceAtDataPointCreateCheckSource()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            string newDataPointName = "NewDataPointName";
+            string testDataPointValue = "TestDataPointValue";
+            DataSet ds = rmsx.createDataSet(newDataSetName);
+            DataPointSource srci = new TestDataPointSource(testDataPointValue);
+            DataPoint dpo = ds.addDataPoint(newDataPointName, srci);
+            DataPointSource srco = dpo.GetSource();
+            Assert.That(srco.GetValue().ToString(), Is.EqualTo(testDataPointValue));
+        }
+
+        [Test]
         public void DataPointSourceSetStaleNoError()
         {
             // Call to SetStale() on DataPointSource should return no error

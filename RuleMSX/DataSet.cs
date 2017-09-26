@@ -24,6 +24,14 @@ namespace com.bloomberg.samples.rulemsx
             return newDataPoint;
         }
 
+        public DataPoint addDataPoint(string name, DataPointSource source)
+        {
+            Log.LogMessage(Log.LogLevels.BASIC, "Adding DataPoint: " + name + " to DataSet: " + this.name);
+            DataPoint newDataPoint = new DataPoint(this, name, source);
+            dataPoints.Add(name, newDataPoint);
+            return newDataPoint;
+        }
+
         public string getName()
         {
             return this.name;
