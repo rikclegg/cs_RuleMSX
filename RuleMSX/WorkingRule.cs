@@ -37,7 +37,7 @@ namespace com.bloomberg.samples.rulemsx
 
                 // Find this dependency in the current dataSet
                 DataPoint dp = this.dataSet.getDataPoint(dependencyName);
-                dp.GetSource().addRuleEventHandler(this);
+                if(dp!=null) dp.GetSource().addRuleEventHandler(this);
             }
         }
 

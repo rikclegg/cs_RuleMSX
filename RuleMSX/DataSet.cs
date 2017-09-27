@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace com.bloomberg.samples.rulemsx
 {
@@ -39,7 +40,12 @@ namespace com.bloomberg.samples.rulemsx
 
         public DataPoint getDataPoint(string name)
         {
-            return dataPoints[name];
+            try {
+                return dataPoints[name];
+            } catch (Exception)
+            {
+                return null;
+            }
         }
 
         public Dictionary<string, DataPoint> getDataPoints()
