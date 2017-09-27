@@ -35,5 +35,29 @@ namespace com.bloomberg.samples.rulemsx {
             if(this.executionAgent != null) return (this.executionAgent.Stop());
             else return true;
         }
+
+        public string report()
+        {
+            string report = "";
+
+            report = "RuleMSX RuleSet Report";
+            report = report + "\n\n";
+            report = report + "RuleSet: " + this.name + "\n";
+
+            List<Rule> reportRules = new List<Rule>();
+
+            foreach (Rule r in this.GetRules())
+            {
+                reportRules.Add(r);
+            }
+
+            for (int i = 0; i < reportRules.Count; i++)
+            {
+                Rule r = reportRules[i];
+                report = report + r.ruleContainerReport("\x9", (i == (reportRules.Count - 1) ? true : false));
+            }
+
+            return report;
+        }
     }
 }
