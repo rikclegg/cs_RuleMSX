@@ -43,27 +43,42 @@ namespace com.bloomberg.samples.rulemsx {
 
             if (isLast)
             {
-                indent = "+-- ";
+                indent = "\u2514" + "\u2500" + "\u2500" + " ";
                 subPrefix = prefix + "\x9";  
             } else
             {
-                indent = "|-- ";
-                subPrefix = prefix + "|" + "\x9";
+                indent = "\u251C" + "\u2500" + "\u2500" + " ";
+                subPrefix = prefix + "\u2502" + "\x9";
             }
 
             report = report + prefix + indent + "Rule: " + ((Rule)this).GetName() + "\n";
 
-            for(int i=0; i <((Rule)this).GetEvaluator().dependantDataPointNames.Count; i++)
+            // Dependencies
+            for (int i=0; i <((Rule)this).GetEvaluator().dependantDataPointNames.Count; i++)
             {
                 if ((i == ((Rule)this).GetEvaluator().dependantDataPointNames.Count - 1) && ((Rule)this).GetActions().Count == 0 && ((Rule)this).GetRules().Count == 0) 
                 {
-                    indent = "+-- ";
+                    indent = "\u2514" + "\u2500" + "\u2500" + " ";
                 }
                 else
                 {
-                    indent = "|-- ";
+                    indent = "\u251C" + "\u2500" + "\u2500" + " ";
                 }
-                report = report + prefix + "\x9\x9" + indent + "Dep: " + ((Rule)this).GetEvaluator().dependantDataPointNames[i] + "\n";
+                report = report + subPrefix + "\x9" + indent + "Dep: " + ((Rule)this).GetEvaluator().dependantDataPointNames[i] + "\n";
+            }
+
+            // Actions
+            for (int i = 0; i < ((Rule)this).GetActions().Count; i++)
+            {
+                if ((i == ((Rule)this).GetActions().Count -1) && ((Rule)this).GetRules().Count == 0)
+                {
+                    indent = "\u2514" + "\u2500" + "\u2500" + " ";
+                }
+                else
+                {
+                    indent = "\u251C" + "\u2500" + "\u2500" + " ";
+                }
+                report = report + subPrefix + "\x9" + indent + "Action: " + ((Rule)this).GetActions()[i].ToString() + "\n";
             }
 
             List<Rule> reportRules = new List<Rule>();
@@ -75,8 +90,9 @@ namespace com.bloomberg.samples.rulemsx {
 
             for (int i = 0; i < reportRules.Count; i++)
             {
+
                 Rule r = reportRules[i];
-                report = report + r.ruleContainerReport(subPrefix, (i == (reportRules.Count - 1) ? true : false));
+                report = report + r.ruleContainerReport(subPrefix + "\x9", (i == (reportRules.Count - 1) ? true : false));
             }
 
             return report;

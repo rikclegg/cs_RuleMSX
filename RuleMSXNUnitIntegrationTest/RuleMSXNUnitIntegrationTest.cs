@@ -41,16 +41,24 @@ namespace RuleMSXNUnitIntegrationTest
 
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
 
-            rs.AddRule(new Rule("TestRule1", new GenericBoolRule(true)));
-            rs.AddRule(new Rule("TestRule2", new GenericBoolRule(false)));
+            rs.AddRule(new Rule("TestRule1", new GenericBoolRule(true), new GenericAction("TestAction1")));
+            Rule r2 = new Rule("TestRule2", new GenericBoolRule(false), new GenericAction("TestAction4"));
+            rs.AddRule(r2);
+            r2.AddRule(new Rule("TestRule5", new GenericBoolRule(true), new GenericAction("TestAction3")));
+            r2.AddRule(new Rule("TestRule6", new GenericBoolRule(false), new GenericAction("TestAction5")));
+
             rs.AddRule(new Rule("TestRule3", new GenericBoolRule(false)));
-            rs.AddRule(new Rule("TestRule4", new GenericBoolRule(true)));
+            Rule r4 = new Rule("TestRule4", new GenericBoolRule(true), new GenericAction("TestAction2"));
+            rs.AddRule(r4);
+            r4.AddRule(new Rule("TestRule7", new GenericBoolRule(false), new GenericAction("TestAction6")));
+            r4.AddRule(new Rule("TestRule8", new GenericBoolRule(true), new GenericAction("TestAction7")));
+
 
             string report = rs.report();
 
             System.Console.WriteLine(report);
 
-            Assert.That(report.Length, Is.EqualTo(241));
+            Assert.That(report.Length, Is.EqualTo(1070));
 
         }
 
@@ -79,7 +87,9 @@ namespace RuleMSXNUnitIntegrationTest
 
             rs.Execute(ds);
 
-            System.Threading.Thread.Sleep(500);
+            // We have to wait for the action to take place. Under normal circumstances there 
+            // would be no interation with the data from outside the evaluators/actions.
+            System.Threading.Thread.Sleep(100);
 
             GenericAction rao = (GenericAction)rai;
             Assert.That(rao.getOutgoing(), Is.EqualTo(actionMessage));
