@@ -97,7 +97,7 @@ namespace com.bloomberg.samples.rulemsx
                                 Log.LogMessage(Log.LogLevels.DETAILED, "Add WorkingRule for Rule: " + nwr.getRule().GetName() + " to OpenSetQueue");
                                 AddToOpenSetQueue(nwr);
                             }
-                            foreach (RuleAction a in wr.actions) {
+                            foreach (ActionExecutor a in wr.actions) {
                                 Log.LogMessage(Log.LogLevels.DETAILED, "Executing Action for Rule: " + wr.getRule().GetName());
                                 a.Execute(wr.dataSet);
                             }

@@ -373,15 +373,15 @@ namespace RuleMSXNUnitTest
             DataSet ds = rmsx.createDataSet(newDataSetName);
             Rule r = new Rule(newRuleName, new GenericBoolRule(true));
             rs.AddRule(r);
-            RuleAction rai = new GenericAction(actionMessage);
+            ActionExecutor rai = new GenericAction(actionMessage);
             r.AddAction(rai);
-            RuleAction rao = r.GetActions()[0];
+            ActionExecutor rao = r.GetActions()[0];
             rao.Execute(ds);
             GenericAction ga = (GenericAction)rao;
             Assert.That(ga.getOutgoing, Is.EqualTo(actionMessage));
         }
 
-        private class GenericAction : RuleAction
+        private class GenericAction : ActionExecutor
         {
             string message;
             string outgoing;

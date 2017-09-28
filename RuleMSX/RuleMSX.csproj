@@ -30,12 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="DataPointSource.cs" />
     <Compile Include="DataSet.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Rule.cs" />
-    <Compile Include="RuleAction.cs" />
+    <Compile Include="ActionExecutor.cs" />
     <Compile Include="RuleContainer.cs" />
     <Compile Include="RuleEvaluator.cs" />
     <Compile Include="RuleEventHandler.cs" />

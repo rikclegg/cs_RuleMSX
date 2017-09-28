@@ -12,7 +12,7 @@ namespace com.bloomberg.samples.rulemsx
         Rule rule;
         internal DataSet dataSet;
         internal RuleEvaluator evaluator;
-        internal List<RuleAction> actions = new List<RuleAction>();
+        internal List<ActionExecutor> actions = new List<ActionExecutor>();
         internal List<WorkingRule> workingRules = new List<WorkingRule>();
 
         internal WorkingRule(ExecutionAgent agent, Rule rule, DataSet dataSet) {

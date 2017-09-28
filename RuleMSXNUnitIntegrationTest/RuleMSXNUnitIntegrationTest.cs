@@ -78,7 +78,7 @@ namespace RuleMSXNUnitIntegrationTest
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
             DataSet ds = rmsx.createDataSet(newDataSetName);
 
-            RuleAction rai = new GenericAction(actionMessage);
+            ActionExecutor rai = new GenericAction(actionMessage);
 
             Rule r = new Rule(newRuleName, new GenericBoolRule(true), rai);
             rs.AddRule(r);
@@ -115,7 +115,7 @@ namespace RuleMSXNUnitIntegrationTest
             }
         }
 
-        private class GenericAction : RuleAction
+        private class GenericAction : ActionExecutor
         {
             string message;
             string outgoing="unset";
