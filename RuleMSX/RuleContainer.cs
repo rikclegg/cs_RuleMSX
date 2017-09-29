@@ -78,7 +78,7 @@ namespace com.bloomberg.samples.rulemsx {
                 {
                     indent = "\u251C" + "\u2500" + "\u2500" + " ";
                 }
-                report = report + subPrefix + "\x9" + indent + "Action: " + ((Rule)this).GetActions()[i].ToString() + "\n";
+                report = report + subPrefix + "\x9" + indent + "Action: " + ((Rule)this).GetActions()[i].getName() + "\n";
             }
 
             List<Rule> reportRules = new List<Rule>();

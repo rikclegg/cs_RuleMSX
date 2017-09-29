@@ -12,7 +12,7 @@ namespace com.bloomberg.samples.rulemsx
         Rule rule;
         internal DataSet dataSet;
         internal RuleEvaluator evaluator;
-        internal List<ActionExecutor> actions = new List<ActionExecutor>();
+        internal List<ActionExecutor> actionExecutors = new List<ActionExecutor>();
         internal List<WorkingRule> workingRules = new List<WorkingRule>();
 
         internal WorkingRule(ExecutionAgent agent, Rule rule, DataSet dataSet) {
@@ -28,7 +28,10 @@ namespace com.bloomberg.samples.rulemsx
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Dereferencing WorkingRule for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
 
-            this.actions = rule.GetActions();
+            foreach(RuleAction a in rule.GetActions())
+            {
+                this.actionExecutors.Add(a.getExecutor());
+            }
             this.evaluator = rule.GetEvaluator();
             
             foreach(string dependencyName in this.evaluator.dependantDataPointNames)

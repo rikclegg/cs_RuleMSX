@@ -41,24 +41,22 @@ namespace RuleMSXNUnitIntegrationTest
 
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
 
-            rs.AddRule(new Rule("TestRule1", new GenericBoolRule(true), new GenericAction("TestAction1")));
-            Rule r2 = new Rule("TestRule2", new GenericBoolRule(false), new GenericAction("TestAction4"));
+            rs.AddRule(new Rule("TestRule1", new GenericBoolRule(true), rmsx.createAction("TestAction1", new GenericAction("TestAction1"))));
+            Rule r2 = new Rule("TestRule2", new GenericBoolRule(false), rmsx.createAction("TestAction4", new GenericAction("TestAction4")));
             rs.AddRule(r2);
-            r2.AddRule(new Rule("TestRule5", new GenericBoolRule(true), new GenericAction("TestAction3")));
-            r2.AddRule(new Rule("TestRule6", new GenericBoolRule(false), new GenericAction("TestAction5")));
-
+            r2.AddRule(new Rule("TestRule5", new GenericBoolRule(true), rmsx.createAction("TestAction3", new GenericAction("TestAction3"))));
+            r2.AddRule(new Rule("TestRule6", new GenericBoolRule(false), rmsx.createAction("TestAction5", new GenericAction("TestAction5"))));
             rs.AddRule(new Rule("TestRule3", new GenericBoolRule(false)));
-            Rule r4 = new Rule("TestRule4", new GenericBoolRule(true), new GenericAction("TestAction2"));
+            Rule r4 = new Rule("TestRule4", new GenericBoolRule(true), rmsx.createAction("TestAction2", new GenericAction("TestAction2")));
             rs.AddRule(r4);
-            r4.AddRule(new Rule("TestRule7", new GenericBoolRule(false), new GenericAction("TestAction6")));
-            r4.AddRule(new Rule("TestRule8", new GenericBoolRule(true), new GenericAction("TestAction7")));
-
+            r4.AddRule(new Rule("TestRule7", new GenericBoolRule(false), rmsx.createAction("TestAction6", new GenericAction("TestAction6"))));
+            r4.AddRule(new Rule("TestRule8", new GenericBoolRule(true), rmsx.createAction("TestAction7", new GenericAction("TestAction7"))));
 
             string report = rs.report();
 
             System.Console.WriteLine(report);
 
-            Assert.That(report.Length, Is.EqualTo(1070));
+            Assert.That(report.Length, Is.EqualTo(664));
 
         }
 
@@ -78,7 +76,7 @@ namespace RuleMSXNUnitIntegrationTest
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
             DataSet ds = rmsx.createDataSet(newDataSetName);
 
-            ActionExecutor rai = new GenericAction(actionMessage);
+            RuleAction rai = rmsx.createAction("RuleActionIn", new GenericAction(actionMessage));
 
             Rule r = new Rule(newRuleName, new GenericBoolRule(true), rai);
             rs.AddRule(r);
@@ -91,7 +89,7 @@ namespace RuleMSXNUnitIntegrationTest
             // would be no interation with the data from outside the evaluators/actions.
             System.Threading.Thread.Sleep(100);
 
-            GenericAction rao = (GenericAction)rai;
+            GenericAction rao = (GenericAction)rai.getExecutor();
             Assert.That(rao.getOutgoing(), Is.EqualTo(actionMessage));
         }
 

@@ -373,11 +373,11 @@ namespace RuleMSXNUnitTest
             DataSet ds = rmsx.createDataSet(newDataSetName);
             Rule r = new Rule(newRuleName, new GenericBoolRule(true));
             rs.AddRule(r);
-            ActionExecutor rai = new GenericAction(actionMessage);
+            RuleAction rai = rmsx.createAction("RuleActionIn", new GenericAction(actionMessage));
             r.AddAction(rai);
-            ActionExecutor rao = r.GetActions()[0];
-            rao.Execute(ds);
-            GenericAction ga = (GenericAction)rao;
+            ActionExecutor rae = r.GetActions()[0].getExecutor();
+            rae.Execute(ds);
+            GenericAction ga = (GenericAction)rae;
             Assert.That(ga.getOutgoing, Is.EqualTo(actionMessage));
         }
 

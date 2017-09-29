@@ -15,7 +15,7 @@ namespace com.bloomberg.samples.rulemsx
 
         List<DataSet> dataSets;
         List<RuleSet> ruleSets;
-        List<Action> actions;
+        List<RuleAction> actions;
 
         public RuleMSX()
         {
@@ -23,7 +23,7 @@ namespace com.bloomberg.samples.rulemsx
 
             dataSets = new List<DataSet>();
             ruleSets = new List<RuleSet>();
-            actions = new List<Action>();
+            actions = new List<RuleAction>();
 
             Log.LogMessage(Log.LogLevels.BASIC, "Instantiating RuleMSX complete.");
         }
@@ -50,23 +50,23 @@ namespace com.bloomberg.samples.rulemsx
             return newRuleSet;
         }
 
-        public Action createAction(string name)
+        public RuleAction createAction(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating Action: " + name);
             if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
-            Action newAction = new Action(name);
+            RuleAction newAction = new RuleAction(name);
             Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.getName() + " to Actions list.");
             actions.Add(newAction);
             Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.getName());
             return newAction;
         }
 
-        public Action createAction(string name, ActionExecutor executor)
+        public RuleAction createAction(string name, ActionExecutor executor)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating Action: " + name + " with executor");
             if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
             if (executor == null) throw new ArgumentException("ActionExecutor cannot be null");
-            Action newAction = new Action(name, executor);
+            RuleAction newAction = new RuleAction(name, executor);
             Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.getName() + " to Actions list.");
             actions.Add(newAction);
             Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.getName() + " with executor");
@@ -85,16 +85,25 @@ namespace com.bloomberg.samples.rulemsx
             return this.ruleSets;
         }
 
-        public List<Action> getActions()
+        public List<RuleAction> getActions()
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Get Actions");
             return this.actions;
         }
 
-        public Action getAction(string name)
+        public RuleAction getAction(string name)
         {
-            foreach(Action a in actions) {
-                if (rs.getName().Equals(name)) return a;
+            foreach(RuleAction a in actions) {
+                if (a.getName().Equals(name)) return a;
+            }
+            return null;
+        }
+
+        public RuleSet getRuleSet(string name)
+        {
+            foreach (RuleSet rs in ruleSets)
+            {
+                if (rs.getName().Equals(name)) return rs;
             }
             return null;
         }

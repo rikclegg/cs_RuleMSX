@@ -6,7 +6,7 @@ namespace com.bloomberg.samples.rulemsx {
 
         private string name;
         private RuleEvaluator evaluator;
-        private List<ActionExecutor> actions = new List<ActionExecutor>();
+        private List<RuleAction> actions = new List<RuleAction>();
 
         public Rule(string name, RuleEvaluator evaluator)
         {
@@ -15,7 +15,7 @@ namespace com.bloomberg.samples.rulemsx {
             this.evaluator = evaluator;
         }
 
-        public Rule(string name, RuleEvaluator evaluator, ActionExecutor action)
+        public Rule(string name, RuleEvaluator evaluator, RuleAction action)
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Rule Constructor (with Action): " + name);
             this.name = name;
@@ -23,7 +23,7 @@ namespace com.bloomberg.samples.rulemsx {
             AddAction(action);
         }
 
-        public void AddAction(ActionExecutor action)
+        public void AddAction(RuleAction action)
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Adding action to Rule: " + name);
             this.actions.Add(action);
@@ -39,7 +39,7 @@ namespace com.bloomberg.samples.rulemsx {
             return this.evaluator;
         }
 
-        public List<ActionExecutor> GetActions()
+        public List<RuleAction> GetActions()
         {
             return actions;
         }

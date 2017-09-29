@@ -50,7 +50,7 @@ namespace com.bloomberg.samples.rulemsx
             {
                 workingSetAgent.Join();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -97,7 +97,7 @@ namespace com.bloomberg.samples.rulemsx
                                 Log.LogMessage(Log.LogLevels.DETAILED, "Add WorkingRule for Rule: " + nwr.getRule().GetName() + " to OpenSetQueue");
                                 AddToOpenSetQueue(nwr);
                             }
-                            foreach (ActionExecutor a in wr.actions) {
+                            foreach (ActionExecutor a in wr.actionExecutors) {
                                 Log.LogMessage(Log.LogLevels.DETAILED, "Executing Action for Rule: " + wr.getRule().GetName());
                                 a.Execute(wr.dataSet);
                             }
