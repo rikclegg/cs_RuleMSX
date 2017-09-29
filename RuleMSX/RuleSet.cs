@@ -6,6 +6,7 @@ namespace com.bloomberg.samples.rulemsx {
 
         private string name;
         private ExecutionAgent executionAgent = null;
+        private long lastCycleTimeMs = 0;
 
         internal RuleSet(string name) {
             Log.LogMessage(Log.LogLevels.DETAILED, "RuleSet constructor: " + name);
@@ -58,6 +59,17 @@ namespace com.bloomberg.samples.rulemsx {
             }
 
             return report;
+        }
+
+        internal void setLastCycleTime(long ms)
+        {
+            this.lastCycleTimeMs = ms;
+            Log.LogMessage(Log.LogLevels.BASIC, "RuleSet " + this.name + " Last Cycle Execution Time : " + ms.ToString());
+        }
+
+        public long GetLastCycleExecutionTime()
+        {
+            return this.lastCycleTimeMs;
         }
     }
 }

@@ -44,5 +44,10 @@ namespace com.bloomberg.samples.rulemsx
         {
             return this.dataSet;
         }
+
+        public object GetValue()
+        {
+            return this.source.GetValue();
+        }
     }
 }

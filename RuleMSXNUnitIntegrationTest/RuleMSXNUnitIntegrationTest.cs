@@ -146,5 +146,148 @@ namespace RuleMSXNUnitIntegrationTest
                 return val;
             }
         }
+
+        [Test]
+        public void CounterTest()
+        {
+
+            Log.logLevel = Log.LogLevels.BASIC;
+
+            RuleMSX rmsx = new RuleMSX();
+
+            RuleSet ruleSet = rmsx.createRuleSet("CounterTestRuleSet");
+            DataSet dataSet = rmsx.createDataSet("CounterTestDataSet");
+
+            dataSet.addDataPoint("counter", new GenericIntDataPointSource(0));
+
+            RuleAction counterSignalAndStep10 = rmsx.createAction("CounterSignalAndStep10", new CounterSignalAndStep(10));
+            RuleAction counterSignalAndStep100 = rmsx.createAction("CounterSignalAndStep100", new CounterSignalAndStep(100));
+            RuleAction counterSignalAndStep1000 = rmsx.createAction("CounterSignalAndStep1000", new CounterSignalAndStep(1000));
+            RuleAction counterSignalAndStep1111000 = rmsx.createAction("CounterSignalAndStep1111000", new CounterSignalAndStep(1111000));
+            EqualSignal equalSignal = new EqualSignal();
+            RuleAction equalSignal1111000 = rmsx.createAction("EqualSignal1111000", equalSignal);
+
+            Rule lessThan10 = new Rule("LessThan10", new IntMinMaxEvaluator(0, 9),counterSignalAndStep10);
+            Rule greaterThanOrEqualTo10LessThan100 = new Rule("GreaterThanOrEqualTo10LessThan100", new IntMinMaxEvaluator(10, 99), counterSignalAndStep100);
+            Rule greaterThanOrEqualTo100LessThan1000 = new Rule("GreaterThanOrEqualTo100LessThan1000", new IntMinMaxEvaluator(100, 999), counterSignalAndStep1000);
+            Rule greaterThanOrEqualTo1000LessThan1111000 = new Rule("GreaterThanOrEqualTo1000LessThan1111000", new IntMinMaxEvaluator(1000, 1110999), counterSignalAndStep1111000);
+            Rule equal1111000 = new Rule("Equal1111000", new EqualEvaluator(1111000), equalSignal1111000);
+
+            ruleSet.AddRule(lessThan10);
+            ruleSet.AddRule(greaterThanOrEqualTo10LessThan100);
+            ruleSet.AddRule(greaterThanOrEqualTo100LessThan1000);
+            ruleSet.AddRule(greaterThanOrEqualTo1000LessThan1111000);
+            ruleSet.AddRule(equal1111000);
+
+            System.Console.WriteLine(ruleSet.report());
+
+            ruleSet.Execute(dataSet);
+
+            System.Threading.Thread.Sleep(3000);
+            System.Console.WriteLine("Execution Time (ms): " + ruleSet.GetLastCycleExecutionTime());
+
+            Assert.That(equalSignal.fired, Is.EqualTo(true));
+        }
+
+        private class GenericIntDataPointSource : DataPointSource
+        {
+            int val;
+
+            public GenericIntDataPointSource(int initVal)
+            {
+                this.val = initVal;
+            }
+
+            public override object GetValue()
+            {
+                return this.val;
+            }
+
+            public void SetVal(int newValue)
+            {
+                this.val = newValue;
+                this.SetStale();
+            }
+        }
+
+        private class IntMinMaxEvaluator : RuleEvaluator
+        {
+            int min;
+            int max;
+
+            public IntMinMaxEvaluator(int min, int max)
+            {
+                this.min = min;
+                this.max = max;
+                this.addDependantDataPointName("counter");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                int counter = (int)dataSet.getDataPoint("counter").GetValue();
+                if (counter >= this.min && counter <= this.max) return true;
+                return false;
+            }
+        }
+
+        private class EqualEvaluator : RuleEvaluator
+        {
+            int val;
+
+            public EqualEvaluator(int val)
+            {
+                this.val = val;
+                this.addDependantDataPointName("counter");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                int counter = (int)dataSet.getDataPoint("counter").GetValue();
+                if (counter == this.val) return true;
+                return false;
+            }
+        }
+
+        private class CounterSignalAndStep : ActionExecutor
+        {
+            int boundary;
+            volatile bool crossed = false;
+
+            public CounterSignalAndStep(int boundary)
+            {
+                this.boundary = boundary;
+            }
+
+            public void Execute(DataSet dataSet)
+            {
+                GenericIntDataPointSource counter = (GenericIntDataPointSource)dataSet.getDataPoint("counter").GetSource();
+
+                if (!this.crossed)
+                {
+                    counter.SetVal((int)counter.GetValue() + 1);
+                    if ((int)counter.GetValue() >= this.boundary)
+                    {
+                        this.crossed = true;
+                        System.Console.WriteLine("Counter is >= " + boundary.ToString());
+                    } else System.Console.WriteLine("Counter value is now: " + counter.GetValue());
+                }
+            }
+        }
+
+        private class EqualSignal : ActionExecutor
+        {
+            public bool fired = false;
+
+            public void Execute(DataSet dataSet)
+            {
+
+                if (!fired)
+                {
+                    System.Console.WriteLine("Counter value equals 1111");
+                    fired = true;
+                }
+            }
+        }
+
     }
 }

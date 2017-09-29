@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace com.bloomberg.samples.rulemsx
@@ -74,9 +75,11 @@ namespace com.bloomberg.samples.rulemsx
                     }
                 }
 
+                Stopwatch cycleTime = System.Diagnostics.Stopwatch.StartNew();
 
                 while (openSetQueue.Count > 0)
                 {
+
                     Log.LogMessage(Log.LogLevels.DETAILED, "OpenSetQueue not empty...");
 
                     lock (openSetLock)
@@ -106,6 +109,10 @@ namespace com.bloomberg.samples.rulemsx
 
                     }
                 }
+
+                cycleTime.Stop();
+                long dur = cycleTime.ElapsedMilliseconds;
+                if(dur>0) ruleSet.setLastCycleTime(dur);
             }
         }
 
@@ -123,10 +130,13 @@ namespace com.bloomberg.samples.rulemsx
                     Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to parent");
                     parent.addWorkingRule(wr);
                 }
-                ingestDataSet(r, dataSet, wr);
+                if (r.GetRules().Count > 0)
+                {
+                    Log.LogMessage(Log.LogLevels.DETAILED, "Checking chained rules...");
+                    ingestDataSet(r, dataSet, wr);
+                }
                 if (rc is RuleSet)
                 {
-                    Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSetQueue");
                     AddToOpenSetQueue(wr); // Add alpha nodes to openSet queue
                 }
             }
@@ -135,8 +145,8 @@ namespace com.bloomberg.samples.rulemsx
         internal void AddToOpenSetQueue(WorkingRule wr)
         {
             lock(openSetLock) {
-                if (!openSet.Contains(wr)) {
-                    Log.LogMessage(Log.LogLevels.DETAILED, "...done.");
+                if (!openSetQueue.Contains(wr)) {
+                    Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSetQueue");
                     openSetQueue.Add(wr); //Only add working rule if it's not already in the queue
                 }
                 else Log.LogMessage(Log.LogLevels.DETAILED, "...ignored (already in queue)");

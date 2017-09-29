@@ -55,7 +55,7 @@ namespace com.bloomberg.samples.rulemsx
 
         public void handleRuleEvent()
         {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSet for " + rule.GetName() + " and DataSet: " + dataSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSet queue for " + rule.GetName() + " and DataSet: " + dataSet.getName());
             agent.AddToOpenSetQueue(this);
         }
     }
