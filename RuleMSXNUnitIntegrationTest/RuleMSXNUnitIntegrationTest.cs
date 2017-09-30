@@ -160,30 +160,48 @@ namespace RuleMSXNUnitIntegrationTest
 
             dataSet.addDataPoint("counter", new GenericIntDataPointSource(0));
 
+            int maxVal = 1000000;
+
             RuleAction counterSignalAndStep10 = rmsx.createAction("CounterSignalAndStep10", new CounterSignalAndStep(10));
             RuleAction counterSignalAndStep100 = rmsx.createAction("CounterSignalAndStep100", new CounterSignalAndStep(100));
             RuleAction counterSignalAndStep1000 = rmsx.createAction("CounterSignalAndStep1000", new CounterSignalAndStep(1000));
-            RuleAction counterSignalAndStep1111000 = rmsx.createAction("CounterSignalAndStep1111000", new CounterSignalAndStep(1111000));
+            RuleAction counterSignalAndStepMax = rmsx.createAction("CounterSignalAndStepMax", new CounterSignalAndStep(maxVal));
             EqualSignal equalSignal = new EqualSignal();
-            RuleAction equalSignal1111000 = rmsx.createAction("EqualSignal1111000", equalSignal);
+            RuleAction equalSignalMax = rmsx.createAction("EqualSignalMax", equalSignal);
 
             Rule lessThan10 = new Rule("LessThan10", new IntMinMaxEvaluator(0, 9),counterSignalAndStep10);
             Rule greaterThanOrEqualTo10LessThan100 = new Rule("GreaterThanOrEqualTo10LessThan100", new IntMinMaxEvaluator(10, 99), counterSignalAndStep100);
             Rule greaterThanOrEqualTo100LessThan1000 = new Rule("GreaterThanOrEqualTo100LessThan1000", new IntMinMaxEvaluator(100, 999), counterSignalAndStep1000);
-            Rule greaterThanOrEqualTo1000LessThan1111000 = new Rule("GreaterThanOrEqualTo1000LessThan1111000", new IntMinMaxEvaluator(1000, 1110999), counterSignalAndStep1111000);
-            Rule equal1111000 = new Rule("Equal1111000", new EqualEvaluator(1111000), equalSignal1111000);
+            Rule greaterThanOrEqualTo1000LessThanMax = new Rule("GreaterThanOrEqualTo1000LessThanMax", new IntMinMaxEvaluator(1000, maxVal-1), counterSignalAndStepMax);
+            Rule equalMax = new Rule("EqualMax", new EqualEvaluator(maxVal), equalSignalMax);
 
             ruleSet.AddRule(lessThan10);
             ruleSet.AddRule(greaterThanOrEqualTo10LessThan100);
             ruleSet.AddRule(greaterThanOrEqualTo100LessThan1000);
-            ruleSet.AddRule(greaterThanOrEqualTo1000LessThan1111000);
-            ruleSet.AddRule(equal1111000);
+            ruleSet.AddRule(greaterThanOrEqualTo1000LessThanMax);
+            ruleSet.AddRule(equalMax);
 
             System.Console.WriteLine(ruleSet.report());
 
             ruleSet.Execute(dataSet);
 
-            System.Threading.Thread.Sleep(3000);
+            int maxMS = 5000;
+            int step = 10;
+            while(maxMS > 0)
+            {
+                if (equalSignal.fired)
+                {
+                    System.Console.WriteLine("Target reached");
+                    break;
+                }
+                System.Threading.Thread.Sleep(step);
+                maxMS -= step;
+            }
+
+            if(maxMS==0) System.Console.WriteLine("Timeout");
+
+            ruleSet.Stop();
+
             System.Console.WriteLine("Execution Time (ms): " + ruleSet.GetLastCycleExecutionTime());
 
             Assert.That(equalSignal.fired, Is.EqualTo(true));
@@ -276,14 +294,14 @@ namespace RuleMSXNUnitIntegrationTest
 
         private class EqualSignal : ActionExecutor
         {
-            public bool fired = false;
+            public volatile bool fired = false;
 
             public void Execute(DataSet dataSet)
             {
 
                 if (!fired)
                 {
-                    System.Console.WriteLine("Counter value equals 1111");
+                    System.Console.WriteLine("Counter value equals Maximum");
                     fired = true;
                 }
             }
