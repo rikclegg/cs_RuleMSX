@@ -14,12 +14,14 @@ namespace com.bloomberg.samples.rulemsx
         internal RuleEvaluator evaluator;
         internal List<ActionExecutor> actionExecutors = new List<ActionExecutor>();
         internal List<WorkingRule> workingRules = new List<WorkingRule>();
+        internal WorkingRule parent;
 
-        internal WorkingRule(ExecutionAgent agent, Rule rule, DataSet dataSet) {
+        internal WorkingRule(ExecutionAgent agent, Rule rule, DataSet dataSet, WorkingRule parent) {
             Log.LogMessage(Log.LogLevels.DETAILED, "WorkingRule constructor for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
             this.agent = agent;
             this.rule = rule;
             this.dataSet = dataSet;
+            this.parent = parent;
 
             dereference();
         }

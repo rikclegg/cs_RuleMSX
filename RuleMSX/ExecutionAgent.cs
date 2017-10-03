@@ -89,6 +89,11 @@ namespace com.bloomberg.samples.rulemsx
                         openSetQueue = new List<WorkingRule>();
                     }
 
+                    // We need to cache the values for each datapoint that underlies a WorkingRule in the Open set.
+                    // This guarentees that each datapoint is referencing the same 'generation' of values.
+                    // TODO
+                    //Maybe!!! I think this may be resovled by managing the openset correcty.
+
                     foreach (WorkingRule wr in openSet)
                     {
 
@@ -124,7 +129,8 @@ namespace com.bloomberg.samples.rulemsx
             foreach (Rule r in rc.GetRules())
             {
                 Log.LogMessage(Log.LogLevels.DETAILED, "Creating WorkingRule for Rule: " + r.GetName());
-                WorkingRule wr = new WorkingRule(this, r, dataSet);
+
+                WorkingRule wr = new WorkingRule(this, r, dataSet, parent);
                 workingSet.Add(wr);
                 if (parent != null) {
                     Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to parent");
@@ -144,14 +150,55 @@ namespace com.bloomberg.samples.rulemsx
 
         internal void AddToOpenSetQueue(WorkingRule wr)
         {
+
+            //When adding to the OpenSet queue, the following rules should be obeyed :-
+            //
+            // 1. WorkingRule with same identifier must not already be in the queue
+            // 2. If ancestor of this WorkingRule is already in the queue, do not add this workingRule
+            // 3. If this rule is an ancestor of a working rule in the queue, that rule must be removed from the queue.
+            //TODO
             lock(openSetLock) {
-                if (!openSetQueue.Contains(wr)) {
+                if (!openSetQueue.Contains(wr) && !hasAncestor(wr, openSetQueue)) {
+                    //Only add working rule if it's not already in the queue, and if there isn't already an ancestor in the queue
+                    removeDecendants(wr.workingRules, openSetQueue);
+
                     Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSetQueue");
-                    openSetQueue.Add(wr); //Only add working rule if it's not already in the queue
+                    openSetQueue.Add(wr); 
                 }
-                else Log.LogMessage(Log.LogLevels.DETAILED, "...ignored (already in queue)");
+                else Log.LogMessage(Log.LogLevels.DETAILED, "...ignored (already in queue or ancestor already in queue)");
             }
         }
 
+        private bool hasAncestor(WorkingRule wr, List<WorkingRule> q)
+        {
+
+            // Slow! Can be optimized using branch address that contains parent address for each WorkingRule. TODO!!
+            WorkingRule target = wr.parent;
+
+            while (target!=null)
+            {
+                foreach(WorkingRule w in q)
+                {
+                    if (target.Equals(w)) return true;
+                }
+                target = target.parent;
+            }
+            return false;
+        }
+
+        private void removeDecendants(List<WorkingRule> decendants, List<WorkingRule> q)
+        {
+            // Remove any decendant working rules from the openSetQueue
+            // Slow!!! Must find other way of doing this!! TODO
+
+            foreach (WorkingRule target in decendants) 
+            {
+                foreach(WorkingRule wr in q)
+                {
+                    if (wr.Equals(target)) q.Remove(wr);
+                }
+                removeDecendants(target.workingRules, q);
+            }
+        }
     }
 }

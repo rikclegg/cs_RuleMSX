@@ -160,7 +160,7 @@ namespace RuleMSXNUnitIntegrationTest
 
             dataSet.addDataPoint("counter", new GenericIntDataPointSource(0));
 
-            int maxVal = 1000000;
+            int maxVal = 100000000;
 
             RuleAction counterSignalAndStep10 = rmsx.createAction("CounterSignalAndStep10", new CounterSignalAndStep(10));
             RuleAction counterSignalAndStep100 = rmsx.createAction("CounterSignalAndStep100", new CounterSignalAndStep(100));
@@ -185,7 +185,7 @@ namespace RuleMSXNUnitIntegrationTest
 
             ruleSet.Execute(dataSet);
 
-            int maxMS = 5000;
+            int maxMS = 400000;
             int step = 10;
             while(maxMS > 0)
             {
@@ -287,7 +287,12 @@ namespace RuleMSXNUnitIntegrationTest
                     {
                         this.crossed = true;
                         System.Console.WriteLine("Counter is >= " + boundary.ToString());
-                    } else System.Console.WriteLine("Counter value is now: " + counter.GetValue());
+                    }
+                    else
+                    {
+                        // System.Console.WriteLine("Counter value is now: " + counter.GetValue());
+
+                    }
                 }
             }
         }
