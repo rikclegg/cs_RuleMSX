@@ -1,7 +1,6 @@
-﻿using com.bloomberg.samples.rulemsx;
+﻿using System;
+using com.bloomberg.samples.rulemsx;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace RuleMSXNUnitIntegrationTest
 {
@@ -309,6 +308,261 @@ namespace RuleMSXNUnitIntegrationTest
                     System.Console.WriteLine("Counter value equals Maximum");
                     fired = true;
                 }
+            }
+        }
+
+        [Test]
+        public void VariableRuleCountTest()
+        {
+
+            /*  Rule: IntBetween(x,y)
+             *
+             *               {1,10}
+             *              /      \
+             *         {1,5}        {6,10}
+             *        /    \        /    \
+             *    {1,3}   {4,5}  {6,8}  {9,10}
+             *    / | \   / \    / | \   / \
+             *  {1}{2}{3}{4}{5}{6}{7}{8}{9}{10}
+             */
+
+            Log.logLevel = Log.LogLevels.NONE;
+
+            RuleMSX rmsx = new RuleMSX();
+
+            RuleSet ruleSet = rmsx.createRuleSet("VariableRuleSet");
+
+            // Set min and max of target range
+            int numMin = 1;
+            int numMax = 3000000;
+
+            // Set value for target
+            int target = 2998999;
+
+            TargetReached targetReached = new TargetReached();
+            RuleAction reached = rmsx.createAction("reached",targetReached);
+
+            Accumulator count = new Accumulator(0);
+
+            // Setup rule tree
+            createNRules(rmsx, ruleSet, reached, count, numMin, numMax);
+
+            DataSet dataSet = rmsx.createDataSet("TargetTestDataSet");
+
+            // Set datapoint for target
+            dataSet.addDataPoint("target", new GenericIntDataPointSource(target));
+
+            // Set datapoint for result
+            dataSet.addDataPoint("result", new GenericIntDataPointSource(0));
+
+            //System.Console.WriteLine("Report: \n\n" + ruleSet.report());
+
+            ruleSet.Execute(dataSet);
+
+            int maxMS = 40000;
+            int step = 10;
+            while (maxMS > 0)
+            {
+                if (targetReached.fired)
+                {
+                    break;
+                }
+                System.Threading.Thread.Sleep(step);
+                maxMS -= step;
+            }
+
+            if (maxMS == 0) System.Console.WriteLine("Timeout");
+
+            ruleSet.Stop();
+
+            System.Console.WriteLine("Execution Time (ms): " + ruleSet.GetLastCycleExecutionTime());
+            System.Console.WriteLine("Number of Evaluations: " + count.value().ToString());
+
+            int result = (int)((GenericIntDataPointSource)dataSet.getDataPoint("result").GetSource()).GetValue();
+
+            Assert.True(target==result);
+        }
+
+        private void createNRules(RuleMSX rmsx, RuleContainer rc, RuleAction reached, Accumulator acm, int min, int max)
+        {
+
+            if (min == max)
+            {
+                // leaf node, so add rule with action
+                Rule newRule = new Rule("intBetween" + min.ToString() + "and" + max.ToString(), new IsIntBetween(min, max, acm), rmsx.createAction("ShowValue", new ShowValue(min)));
+                newRule.AddAction(reached);
+                rc.AddRule(newRule);
+            }
+            else
+            {
+                Rule newRule = new Rule("intBetween" + min.ToString() + "and" + max.ToString(), new IsIntBetween(min, max,acm));
+                rc.AddRule(newRule);
+
+                if (max - min < 2)
+                {
+                    createNRules(rmsx, newRule, reached, acm, min, min);
+                    createNRules(rmsx, newRule, reached, acm, max, max);
+                }
+                else
+                {
+                    int mid = ((max - min) / 2) + min;
+                    createNRules(rmsx, newRule, reached, acm, min, mid);
+                    createNRules(rmsx, newRule, reached, acm, mid + 1, max);
+                }
+            }
+        }
+
+        private class IsIntBetween : RuleEvaluator
+        {
+            int min;
+            int max;
+            Accumulator acm;
+
+            public IsIntBetween(int min, int max, Accumulator acm)
+            {
+                this.min = min;
+                this.max = max;
+                this.addDependantDataPointName("target");
+                this.acm = acm;
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                int target = (int)dataSet.getDataPoint("target").GetValue();
+                acm.inc(1);
+                if (target >= min && target <= max) return true;
+                else return false;
+            }
+        }
+
+        private class ShowValue : ActionExecutor
+        {
+            int val;
+
+            public ShowValue(int val)
+            {
+                this.val = val;
+            }
+
+            public void Execute(DataSet dataSet)
+            {
+                GenericIntDataPointSource res =  (GenericIntDataPointSource)dataSet.getDataPoint("result").GetSource();
+                res.SetVal(val);
+                System.Console.WriteLine("Value is : " + this.val.ToString());
+            }
+        }
+
+        private class TargetReached : ActionExecutor
+        {
+            public volatile bool fired = false;
+
+            public void Execute(DataSet dataSet)
+            {
+                fired = true;
+            }
+        }
+
+        private class Accumulator
+        {
+            int val;
+
+            public Accumulator(int initVal)
+            {
+                this.val = initVal;
+            }
+
+            public void inc(int i)
+            {
+                this.val += i;
+            }
+
+            public int value()
+            {
+                return this.val;
+            }
+        }
+
+        [Test]
+        public void VariableDataSetCountTest()
+        {
+
+            Log.logLevel = Log.LogLevels.NONE;
+
+            RuleMSX rmsx = new RuleMSX();
+
+            RuleSet ruleSet = rmsx.createRuleSet("VariableRuleSet");
+
+            // Set min and max of target range
+            int numMin = 1;
+            int numMax = 100;
+
+            // Set value for target
+            int target = 998;
+
+            // number of datasets to run
+            int numDataSets = 500;
+
+            MultiTargetReached targetReached = new MultiTargetReached(numDataSets);
+            RuleAction reached = rmsx.createAction("reached", targetReached);
+
+            Accumulator count = new Accumulator(0);
+
+            // Setup rule tree
+            createNRules(rmsx, ruleSet, reached, count, numMin, numMax);
+
+
+            for (int i = 0; i < numDataSets; i++)
+            {
+
+                DataSet dataSet = rmsx.createDataSet("TargetTestDataSet" + i.ToString());
+
+                // Set datapoint for target
+                dataSet.addDataPoint("target", new GenericIntDataPointSource(target));
+
+                // Set datapoint for result
+                dataSet.addDataPoint("result", new GenericIntDataPointSource(0));
+
+                ruleSet.Execute(dataSet);
+            }
+
+            int maxMS = 40000;
+            int step = 10;
+            while (maxMS > 0)
+            {
+                if (targetReached.fired)
+                {
+                    break;
+                }
+                System.Threading.Thread.Sleep(step);
+                maxMS -= step;
+            }
+
+            if (maxMS == 0) System.Console.WriteLine("Timeout");
+            ruleSet.Stop();
+
+            System.Console.WriteLine("Execution Time (ms): " + ruleSet.GetLastCycleExecutionTime());
+            System.Console.WriteLine("Number of Evaluations: " + count.value().ToString());
+
+            //int result = (int)((GenericIntDataPointSource)dataSet.getDataPoint("result").GetSource()).GetValue();
+
+            Assert.True(true);
+        }
+
+        private class MultiTargetReached : ActionExecutor
+        {
+            private int multiTarget;
+            private int hitCount=0;
+            public volatile bool fired = false;
+
+            public MultiTargetReached(int multiTarget)
+            {
+                this.multiTarget = multiTarget;
+            }
+
+            public void Execute(DataSet dataSet)
+            {
+                hitCount++;
+                if(hitCount==multiTarget) fired = true;
             }
         }
 
