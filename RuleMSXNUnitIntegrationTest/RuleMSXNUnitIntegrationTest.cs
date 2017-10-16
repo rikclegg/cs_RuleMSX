@@ -160,7 +160,7 @@ namespace RuleMSXNUnitIntegrationTest
 
             dataSet.addDataPoint("counter", new GenericIntDataPointSource(0));
 
-            int maxVal = 100000000;
+            int maxVal = 10000;
 
             RuleAction counterSignalAndStep10 = rmsx.createAction("CounterSignalAndStep10", new CounterSignalAndStep(10));
             RuleAction counterSignalAndStep100 = rmsx.createAction("CounterSignalAndStep100", new CounterSignalAndStep(100));
