@@ -334,10 +334,10 @@ namespace RuleMSXNUnitIntegrationTest
 
             // Set min and max of target range
             int numMin = 1;
-            int numMax = 3000000;
+            int numMax = 10000;
 
             // Set value for target
-            int target = 2998999;
+            int target = 9999;
 
             TargetReached targetReached = new TargetReached();
             RuleAction reached = rmsx.createAction("reached",targetReached);
@@ -494,7 +494,7 @@ namespace RuleMSXNUnitIntegrationTest
 
             // Set min and max of target range
             int numMin = 1;
-            int numMax = 100;
+            int numMax = 1000;
 
             // Set value for target
             int target = 998;
