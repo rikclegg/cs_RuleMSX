@@ -53,5 +53,21 @@ namespace com.bloomberg.samples.rulemsx
             return this.dataPoints;
         }
 
+        public String report()
+        {
+            string report = "";
+
+            report = "RuleMSX DataSet Report";
+            report = report + "\n";
+            report = report + "DataSet: " + this.name + "\n";
+
+            foreach(KeyValuePair < string, DataPoint > entry in this.dataPoints)
+            {
+                report = report + entry.Key + ": " + entry.Value.GetValue() + "\n";
+            }
+
+            return report;
+
+        }
     }
 }

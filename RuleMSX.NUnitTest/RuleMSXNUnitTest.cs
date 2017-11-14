@@ -400,6 +400,24 @@ namespace RuleMSXNUnitTest
                 return this.outgoing;
             }
         }
+
+        [Test]
+        public void CreateDataSetAndDumpCheckSize()
+        {
+            RuleMSX rmsx = new RuleMSX();
+            string newDataSetName = "NewDataSet";
+            DataSet ds = rmsx.createDataSet(newDataSetName);
+            ds.addDataPoint("DataPoint1").SetDataPointSource(new TestDataPointSource("dp1"));
+            ds.addDataPoint("DataPoint2").SetDataPointSource(new TestDataPointSource("dp2"));
+            ds.addDataPoint("DataPoint3").SetDataPointSource(new TestDataPointSource("dp3"));
+            ds.addDataPoint("DataPoint4").SetDataPointSource(new TestDataPointSource("dp4"));
+            ds.addDataPoint("DataPoint5").SetDataPointSource(new TestDataPointSource("dp5"));
+            string report = ds.report();
+            System.Console.WriteLine(report);
+            Assert.That(report.Length, Is.EqualTo(123));
+        }
+
+
     }
 }
 
