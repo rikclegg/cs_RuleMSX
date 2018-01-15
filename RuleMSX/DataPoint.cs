@@ -32,7 +32,7 @@ namespace com.bloomberg.samples.rulemsx
         public void SetDataPointSource(DataPointSource source)
         {
             source.setDataPoint(this);
-            this.source = source;
+            this.source = source;o
         }
 
         public DataPointSource GetSource()

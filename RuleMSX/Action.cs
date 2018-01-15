@@ -1,15 +1,15 @@
 ﻿namespace com.bloomberg.samples.rulemsx
 {
-    public class RuleAction
+    public class Action
     {
         string name;
         ActionExecutor executor;
 
-        internal RuleAction(string name)
+        internal Action(string name)
         {
             this.name = name;
         }
-        internal RuleAction(string name, ActionExecutor executor)
+        internal Action(string name, ActionExecutor executor)
         {
             this.name = name;
             this.addExecutor(executor);
