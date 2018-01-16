@@ -37,7 +37,7 @@ namespace com.bloomberg.samples.rulemsx
             this.dataPoints = new Dictionary<string, DataPoint>();
         }
 
-        public DataPoint addDataPoint(string name)
+        public DataPoint AddDataPoint(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Adding DataPoint: " + name + " to DataSet: " + this.name);
             if (name == null || name == "") throw new ArgumentException("DataPoint name cannot be null or empty");
@@ -46,7 +46,7 @@ namespace com.bloomberg.samples.rulemsx
             return newDataPoint;
         }
 
-        public DataPoint addDataPoint(string name, DataPointSource source)
+        public DataPoint AddDataPoint(string name, DataPointSource source)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Adding DataPoint: " + name + " to DataSet: " + this.name);
             if (name == null || name == "") throw new ArgumentException("DataPoint name cannot be null or empty");
@@ -73,23 +73,6 @@ namespace com.bloomberg.samples.rulemsx
         public Dictionary<string, DataPoint> getDataPoints()
         {
             return this.dataPoints;
-        }
-
-        public String report()
-        {
-            string report = "";
-
-            report = "RuleMSX DataSet Report";
-            report = report + "\n";
-            report = report + "DataSet: " + this.name + "\n";
-
-            foreach(KeyValuePair < string, DataPoint > entry in this.dataPoints)
-            {
-                report = report + entry.Key + ": " + entry.Value.GetValue() + "\n";
-            }
-
-            return report;
-
         }
     }
 }

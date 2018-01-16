@@ -6,43 +6,41 @@ using System.Threading.Tasks;
 
 namespace com.bloomberg.samples.rulemsx
 {
-    class WorkingRule : RuleEventHandler
+    class WorkingRule
     {
         ExecutionAgent agent;
         Rule rule;
         internal DataSet dataSet;
-        internal RuleEvaluator evaluator;
-        internal List<ActionExecutor> actionExecutors = new List<ActionExecutor>();
-        internal List<WorkingRule> workingRules = new List<WorkingRule>();
-        internal WorkingRule parent;
+        internal List<RuleEvaluator> evaluators = new List<RuleEvaluator>();
+        internal List<ActionExecutor> executors = new List<ActionExecutor>();
 
-        internal WorkingRule(ExecutionAgent agent, Rule rule, DataSet dataSet, WorkingRule parent) {
+        internal WorkingRule(Rule rule, DataSet dataSet, ExecutionAgent agent) {
             Log.LogMessage(Log.LogLevels.DETAILED, "WorkingRule constructor for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
             this.agent = agent;
             this.rule = rule;
             this.dataSet = dataSet;
-            this.parent = parent;
-
-            dereference();
+            Dereference();
         }
 
-        private void dereference()
+        private void Dereference()
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Dereferencing WorkingRule for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
 
-            foreach(RuleAction a in rule.GetActions())
+            foreach(Action a in rule.GetActions())
             {
-                this.actionExecutors.Add(a.getExecutor());
+                this.executors.Add(a.GetExecutor());
             }
-            this.evaluator = rule.GetEvaluator();
-            
-            foreach(string dependencyName in this.evaluator.dependantDataPointNames)
-            {
-                Log.LogMessage(Log.LogLevels.DETAILED, "Connecting WorkingRule Dependencies for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
 
-                // Find this dependency in the current dataSet
-                DataPoint dp = this.dataSet.getDataPoint(dependencyName);
-                if(dp!=null) dp.GetSource().addRuleEventHandler(this);
+            foreach(RuleCondition c in rule.GetConditions())
+            {
+                RuleEvaluator e = c.GetEvaluator();
+                this.evaluators.Add(e);
+
+                foreach(String dpn in e.dependantDataPointNames)
+                {
+                    DataPoint dp = this.dataSet.getDataPoint(dpn);
+                    dp.GetSource().AssociateWorkingRule(this);
+                }
             }
         }
 
@@ -50,15 +48,9 @@ namespace com.bloomberg.samples.rulemsx
             return this.rule;
         }
 
-        internal void addWorkingRule(WorkingRule wr) {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding child WorkingRule to Dependencies for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
-            this.workingRules.Add(wr);
-        }
-
-        public void handleRuleEvent()
+        internal void EnqueueWorkingRule()
         {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding WorkingRule to OpenSet queue for " + rule.GetName() + " and DataSet: " + dataSet.getName());
-            agent.AddToOpenSetQueue(this);
+            this.agent.EnqueueWorkingRule(this);
         }
     }
 }

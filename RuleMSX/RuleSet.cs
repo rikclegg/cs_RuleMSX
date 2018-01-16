@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace com.bloomberg.samples.rulemsx {
 
@@ -6,7 +7,6 @@ namespace com.bloomberg.samples.rulemsx {
 
         private string name;
         private ExecutionAgent executionAgent = null;
-        private long lastCycleTimeMs = 0;
         internal List<Rule> rules = new List<Rule>();
 
         internal RuleSet(string name) {
@@ -14,7 +14,7 @@ namespace com.bloomberg.samples.rulemsx {
             this.name = name;
         }
 
-        public string getName()
+        public string GetName()
         {
             return this.name;
         }
@@ -25,7 +25,32 @@ namespace com.bloomberg.samples.rulemsx {
             if (this.executionAgent != null) return (this.executionAgent.Stop());
             else return true;
         }
-        
+
+        public Rule AddRule(string name)
+        {
+            Log.LogMessage(Log.LogLevels.BASIC, "Adding Rule: " + name);
+            if (name == null || name == "") throw new ArgumentException("Rule name cannot be null or empty");
+            Rule newRule = new Rule(this, name);
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Rule " + newRule.GetName() + " to RuleSet " + this.name);
+            rules.Add(newRule);
+            Log.LogMessage(Log.LogLevels.BASIC, "New Rule Added: " + newRule.GetName());
+            return newRule;
+        }
+
+        public List<Rule> GetRules()
+        {
+            return this.rules;
+        }
+
+        public Rule GetRule(string name)
+        {
+            foreach (Rule r in this.rules)
+            {
+                if (r.GetName().Equals(name)) return r;
+            }
+            return null;
+        }
+
 
         public void Execute(DataSet dataSet) {
 
@@ -36,44 +61,8 @@ namespace com.bloomberg.samples.rulemsx {
                 this.executionAgent = new ExecutionAgent(this, dataSet);
             } else {
                 Log.LogMessage(Log.LogLevels.DETAILED, "RuleSet already has ExecutionAgent, adding DataSet " + dataSet.getName());
-                this.executionAgent.addDataSet(dataSet);
+                this.executionAgent.AddDataSet(dataSet);
             }
-        }
-
-
-        public string report()
-        {
-            string report = "";
-
-            report = "RuleMSX RuleSet Report";
-            report = report + "\n\n";
-            report = report + "RuleSet: " + this.name + "\n";
-
-            List<Rule> reportRules = new List<Rule>();
-
-            foreach (Rule r in this.GetRules())
-            {
-                reportRules.Add(r);
-            }
-
-            for (int i = 0; i < reportRules.Count; i++)
-            {
-                Rule r = reportRules[i];
-                report = report + r.ruleContainerReport("\x9", (i == (reportRules.Count - 1) ? true : false));
-            }
-
-            return report;
-        }
-
-        internal void setLastCycleTime(long ms)
-        {
-            this.lastCycleTimeMs = ms;
-            Log.LogMessage(Log.LogLevels.BASIC, "RuleSet " + this.name + " Last Cycle Execution Time : " + ms.ToString());
-        }
-
-        public long GetLastCycleExecutionTime()
-        {
-            return this.lastCycleTimeMs;
         }
     }
 }

@@ -114,7 +114,7 @@ namespace com.bloomberg.samples.rulemsx
         public Action getAction(string name)
         {
             foreach(Action a in actions) {
-                if (a.getName().Equals(name)) return a;
+                if (a.GetName().Equals(name)) return a;
             }
             return null;
         }

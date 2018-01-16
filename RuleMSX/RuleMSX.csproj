@@ -37,9 +37,8 @@
     <Compile Include="Log.cs" />
     <Compile Include="Rule.cs" />
     <Compile Include="ActionExecutor.cs" />
-    <Compile Include="RuleContainer.cs" />
+    <Compile Include="RuleCondition.cs" />
     <Compile Include="RuleEvaluator.cs" />
-    <Compile Include="RuleEventHandler.cs" />
     <Compile Include="RuleMSX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleSet.cs" />
