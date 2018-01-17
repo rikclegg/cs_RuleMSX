@@ -27,36 +27,36 @@ namespace com.bloomberg.samples.rulemsx
 {
     class ExecutionAgent {
 
+        RuleSet ruleSet;
         static readonly object dataSetLock = new object();
-        static readonly object openSetLock = new object();
-        List<WorkingRule> workingSet = new List<WorkingRule>();
+        Thread workingSetAgent;
+        volatile bool running = true;
+        Queue<DataSet> dataSetQueue = new Queue<DataSet>();
         List<WorkingRule> openSetQueue = new List<WorkingRule>();
         List<WorkingRule> openSet = new List<WorkingRule>();
-        Queue<DataSet> dataSetQueue = new Queue<DataSet>();
-        Thread workingSetAgent;
-        RuleSet ruleSet;
-        volatile bool stop = false;
+        static readonly object openSetLock = new object();
+        List<WorkingRule> workingSet = new List<WorkingRule>();
+
 
         internal ExecutionAgent(RuleSet ruleSet, DataSet dataSet) {
 
-            Log.LogMessage(Log.LogLevels.DETAILED, "ExecutionEngine constructor for RuleSet: " + ruleSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "ExecutionEngine constructor for RuleSet: " + ruleSet.GetName());
 
             this.ruleSet = ruleSet;
 
             addDataSet(dataSet);
 
-            Log.LogMessage(Log.LogLevels.DETAILED, "Creating thread for WorkingSetAgent for RuleSet: " + ruleSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "Creating thread for WorkingSetAgent for RuleSet: " + ruleSet.GetName());
 
             ThreadStart agent = new ThreadStart(WorkingSetAgent);
             workingSetAgent = new Thread(agent);
-            Log.LogMessage(Log.LogLevels.DETAILED, "Starting thread for WorkingSetAgent for RuleSet: " + ruleSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "Starting thread for WorkingSetAgent for RuleSet: " + ruleSet.GetName());
             workingSetAgent.Start();
-
         }
 
         internal void addDataSet (DataSet dataSet)
         {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding DataSet to DataSet queue for RuleSet: " + this.ruleSet.getName() + " and DataSet: " + dataSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding DataSet to DataSet queue for RuleSet: " + this.ruleSet.GetName() + " and DataSet: " + dataSet.getName());
 
             lock (dataSetLock)
             {
@@ -65,8 +65,8 @@ namespace com.bloomberg.samples.rulemsx
         }
 
         internal bool Stop() {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Stoping thread for WorkingSetAgent for RuleSet: " + ruleSet.getName());
-            this.stop = true;
+            Log.LogMessage(Log.LogLevels.DETAILED, "Stoping thread for WorkingSetAgent for RuleSet: " + ruleSet.GetName());
+            this.running = false;
             try
             {
                 workingSetAgent.Join();
@@ -80,9 +80,9 @@ namespace com.bloomberg.samples.rulemsx
 
         internal void WorkingSetAgent() {
 
-            Log.LogMessage(Log.LogLevels.DETAILED, "Running WorkingSetAgent for " + ruleSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "Running WorkingSetAgent for " + ruleSet.GetName());
 
-            while (!stop)
+            while (running)
             {
 
                 // Ingest any new DataSets
