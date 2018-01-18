@@ -15,7 +15,7 @@ namespace com.bloomberg.samples.rulemsx
         internal List<ActionExecutor> executors = new List<ActionExecutor>();
 
         internal WorkingRule(Rule rule, DataSet dataSet, ExecutionAgent agent) {
-            Log.LogMessage(Log.LogLevels.DETAILED, "WorkingRule constructor for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "WorkingRule constructor for Rule: " + rule.GetName() + " and DataSet: " + dataSet.GetName());
             this.agent = agent;
             this.rule = rule;
             this.dataSet = dataSet;
@@ -24,7 +24,7 @@ namespace com.bloomberg.samples.rulemsx
 
         private void Dereference()
         {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Dereferencing WorkingRule for Rule: " + rule.GetName() + " and DataSet: " + dataSet.getName());
+            Log.LogMessage(Log.LogLevels.DETAILED, "Dereferencing WorkingRule for Rule: " + rule.GetName() + " and DataSet: " + dataSet.GetName());
 
             foreach(Action a in rule.GetActions())
             {

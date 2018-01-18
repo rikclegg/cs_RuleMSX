@@ -43,7 +43,7 @@ namespace RuleMSXNUnitTest
             RuleMSX rmsx = new RuleMSX();
             string newDataSetName = "NewDataSet";
             DataSet dataSet = rmsx.createDataSet(newDataSetName);
-            Assert.That(dataSet.getName(), Is.EqualTo(newDataSetName));
+            Assert.That(dataSet.GetName(), Is.EqualTo(newDataSetName));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace RuleMSXNUnitTest
             RuleMSX rmsx = new RuleMSX();
             string newRuleSetName = "NewRuleSet";
             RuleSet ruleSet = rmsx.createRuleSet(newRuleSetName);
-            Assert.That(ruleSet.getName(), Is.EqualTo(newRuleSetName));
+            Assert.That(ruleSet.GetName(), Is.EqualTo(newRuleSetName));
         }
 
         [Test]
@@ -102,9 +102,8 @@ namespace RuleMSXNUnitTest
             string newDataSetName = "NewDataSet";
             string newRuleName = "Rule1";
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            Rule r = new Rule(newRuleName, new GenericBoolRule(true));
+            rs.AddRule(newRuleName);
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            rs.AddRule(r);
             rs.Execute(ds);
             Assert.That(rmsx.Stop(), Is.EqualTo(true));
         }
@@ -132,9 +131,8 @@ namespace RuleMSXNUnitTest
             string newDataSetName = "NewDataSet";
             string newRuleName = "Rule1";
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            Rule r = new Rule(newRuleName, new GenericBoolRule(true));
+            rs.AddRule(newRuleName);
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            rs.AddRule(r);
             // We are deliberately not executing the ruleset...
             //rs.Execute(ds);
             Assert.That(rmsx.Stop(), Is.EqualTo(true));
@@ -146,7 +144,7 @@ namespace RuleMSXNUnitTest
             RuleMSX rmsx = new RuleMSX();
             string newRuleSetName = "NewRuleSet";
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            Assert.That(rs.getName(), Is.EqualTo(newRuleSetName));                   
+            Assert.That(rs.GetName(), Is.EqualTo(newRuleSetName));                   
         }
 
         [Test]
@@ -155,7 +153,7 @@ namespace RuleMSXNUnitTest
             RuleMSX rmsx = new RuleMSX();
             string newDataSetName = "NewDataSet";
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            Assert.That(ds.getName(), Is.EqualTo(newDataSetName));
+            Assert.That(ds.GetName(), Is.EqualTo(newDataSetName));
         }
 
         [Test]
@@ -165,8 +163,7 @@ namespace RuleMSXNUnitTest
             string newRuleSetName = "NewRuleSet";
             string newRuleName = "Rule1";
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            Rule r = new Rule(newRuleName, new GenericBoolRule(true));
-            rs.AddRule(r);
+            rs.AddRule(newRuleName);
             Assert.That(rs.GetRule(newRuleName).GetName(), Is.EqualTo(newRuleName));
         }
 
@@ -177,7 +174,7 @@ namespace RuleMSXNUnitTest
             string newDataSetName = "NewDataSet";
             string newDataPointName = "DataPoint1";
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            DataPoint dp1 = ds.addDataPoint(newDataPointName);
+            DataPoint dp1 = ds.AddDataPoint(newDataPointName);
             Assert.That(dp1.GetName(), Is.EqualTo(newDataPointName));
         }
 
@@ -188,7 +185,7 @@ namespace RuleMSXNUnitTest
             string newDataSetName = "NewDataSet";
             rmsx.createDataSet(newDataSetName);
             DataSet ds = rmsx.getDataSet(newDataSetName);
-            Assert.That(ds.getName(), Is.EqualTo(newDataSetName));
+            Assert.That(ds.GetName(), Is.EqualTo(newDataSetName));
         }
 
         [Test]
@@ -198,7 +195,7 @@ namespace RuleMSXNUnitTest
             string newRuleSetName = "NewRuleSet";
             rmsx.createRuleSet(newRuleSetName);
             RuleSet rs = rmsx.getRuleSet(newRuleSetName);
-            Assert.That(rs.getName(), Is.EqualTo(newRuleSetName));
+            Assert.That(rs.GetName(), Is.EqualTo(newRuleSetName));
         }
 
         [Test]
@@ -229,7 +226,7 @@ namespace RuleMSXNUnitTest
             rmsx.createDataSet(newDataSetName);
             List<DataSet> dsl = rmsx.getDataSets();
             DataSet ds = dsl[0];
-            Assert.That(ds.getName(), Is.EqualTo(newDataSetName));
+            Assert.That(ds.GetName(), Is.EqualTo(newDataSetName));
         }
 
         [Test]
@@ -240,7 +237,7 @@ namespace RuleMSXNUnitTest
             rmsx.createRuleSet(newRuleSetName);
             List<RuleSet> rsl = rmsx.getRuleSets();
             RuleSet rs = rsl[0];
-            Assert.That(rs.getName(), Is.EqualTo(newRuleSetName));
+            Assert.That(rs.GetName(), Is.EqualTo(newRuleSetName));
         }
 
         [Test]
@@ -250,7 +247,7 @@ namespace RuleMSXNUnitTest
             string newDataSetName = "NewDataSet";
             string newDataPointName = "NewDataPointName";
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            DataPoint dpi = ds.addDataPoint(newDataPointName);
+            DataPoint dpi = ds.AddDataPoint(newDataPointName);
             Dictionary<string, DataPoint> dpd = ds.getDataPoints();
             DataPoint dpo;
             dpd.TryGetValue(newDataPointName, out dpo);
@@ -264,8 +261,7 @@ namespace RuleMSXNUnitTest
             string newRuleSetName = "NewRuleSet";
             string newRuleName = "NewRuleName";
             RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            Rule ri = new Rule(newRuleName,new GenericBoolRule(true));
-            rs.AddRule(ri);
+            Rule ri = rs.AddRule(newRuleName);
             List<Rule> rl = rs.GetRules();
             Rule ro = rl[0];
             Assert.That(ro.GetName(), Is.EqualTo(newRuleName));
@@ -278,7 +274,7 @@ namespace RuleMSXNUnitTest
             string newDataSetName = "NewDataSet";
             string newDataPointName = "NewDataPointName";
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            DataPoint dpo = ds.addDataPoint(newDataPointName);
+            DataPoint dpo = ds.AddDataPoint(newDataPointName);
             Assert.That(dpo.GetName(), Is.EqualTo(newDataPointName));
         }
 
@@ -290,7 +286,7 @@ namespace RuleMSXNUnitTest
             string newDataPointName = "NewDataPointName";
             string testDataPointValue = "TestDataPointValue";
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            DataPoint dpo = ds.addDataPoint(newDataPointName);
+            DataPoint dpo = ds.AddDataPoint(newDataPointName);
             DataPointSource srci = new TestDataPointSource(testDataPointValue);
             dpo.SetDataPointSource(srci);
             DataPointSource srco = dpo.GetSource();
@@ -320,7 +316,7 @@ namespace RuleMSXNUnitTest
             string testDataPointValue = "TestDataPointValue";
             DataSet ds = rmsx.createDataSet(newDataSetName);
             DataPointSource srci = new TestDataPointSource(testDataPointValue);
-            DataPoint dpo = ds.addDataPoint(newDataPointName, srci);
+            DataPoint dpo = ds.AddDataPoint(newDataPointName, srci);
             DataPointSource srco = dpo.GetSource();
             Assert.That(srco.GetValue().ToString(), Is.EqualTo(testDataPointValue));
         }
@@ -334,90 +330,11 @@ namespace RuleMSXNUnitTest
             string newDataPointName = "NewDataPointName";
             string testDataPointValue = "TestDataPointValue";
             DataSet ds = rmsx.createDataSet(newDataSetName);
-            DataPoint dpo = ds.addDataPoint(newDataPointName);
+            DataPoint dpo = ds.AddDataPoint(newDataPointName);
             DataPointSource srci = new TestDataPointSource(testDataPointValue);
             dpo.SetDataPointSource(srci);
             Assert.DoesNotThrow(() => srci.SetStale());
         }
-
-        [Test]
-        public void RuleGetEvaluatorReturnsCorrectEvaluator()
-        {
-            RuleMSX rmsx = new RuleMSX();
-            string newRuleSetName = "NewRuleSet";
-            string newDataSetName = "NewDataSet";
-            string newRuleName = "Rule1";
-            RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            Rule r = new Rule(newRuleName, new GenericBoolRule(true));
-            DataSet ds = rmsx.createDataSet(newDataSetName);
-            rs.AddRule(r);
-            Assert.That(r.GetEvaluator().Evaluate(ds), Is.EqualTo(true));
-        }
-
-        [Test]
-        public void EvaluatorAddDependencyNameNoError()
-        {
-            RuleEvaluator newRuleEval = new GenericBoolRule(true);
-            Assert.DoesNotThrow(() => newRuleEval.addDependantDataPointName("SomeName"));
-        }
-
-        [Test]
-        public void RuleAddActionGetActionReturnsCorrectAction()
-        {
-            RuleMSX rmsx = new RuleMSX();
-            string newRuleSetName = "NewRuleSet";
-            string newDataSetName = "NewDataSet";
-            string newRuleName = "Rule1";
-            string actionMessage = "ActionMessage";
-            RuleSet rs = rmsx.createRuleSet(newRuleSetName);
-            DataSet ds = rmsx.createDataSet(newDataSetName);
-            Rule r = new Rule(newRuleName, new GenericBoolRule(true));
-            rs.AddRule(r);
-            RuleAction rai = rmsx.createAction("RuleActionIn", new GenericAction(actionMessage));
-            r.AddAction(rai);
-            ActionExecutor rae = r.GetActions()[0].getExecutor();
-            rae.Execute(ds);
-            GenericAction ga = (GenericAction)rae;
-            Assert.That(ga.getOutgoing, Is.EqualTo(actionMessage));
-        }
-
-        private class GenericAction : ActionExecutor
-        {
-            string message;
-            string outgoing;
-
-            public GenericAction(string message)
-            {
-                this.message = message;
-            }
-            public void Execute(DataSet dataSet)
-            {
-                this.outgoing = message;
-            }
-
-            public string getOutgoing()
-            {
-                return this.outgoing;
-            }
-        }
-
-        [Test]
-        public void CreateDataSetAndDumpCheckSize()
-        {
-            RuleMSX rmsx = new RuleMSX();
-            string newDataSetName = "NewDataSet";
-            DataSet ds = rmsx.createDataSet(newDataSetName);
-            ds.addDataPoint("DataPoint1").SetDataPointSource(new TestDataPointSource("dp1"));
-            ds.addDataPoint("DataPoint2").SetDataPointSource(new TestDataPointSource("dp2"));
-            ds.addDataPoint("DataPoint3").SetDataPointSource(new TestDataPointSource("dp3"));
-            ds.addDataPoint("DataPoint4").SetDataPointSource(new TestDataPointSource("dp4"));
-            ds.addDataPoint("DataPoint5").SetDataPointSource(new TestDataPointSource("dp5"));
-            string report = ds.report();
-            System.Console.WriteLine(report);
-            Assert.That(report.Length, Is.EqualTo(123));
-        }
-
-
     }
 }
 

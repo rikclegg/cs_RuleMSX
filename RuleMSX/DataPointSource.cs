@@ -34,7 +34,7 @@ namespace com.bloomberg.samples.rulemsx
             this.isStale = true;
             foreach (WorkingRule awr in this.associatedWorkingRules)
             {
-                awr.enqueueWorkingRule();
+                awr.EnqueueWorkingRule();
             }
         }
 

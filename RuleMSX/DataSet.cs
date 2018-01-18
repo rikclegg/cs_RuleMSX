@@ -55,7 +55,7 @@ namespace com.bloomberg.samples.rulemsx
             return newDataPoint;
         }
 
-        public string getName()
+        public string GetName()
         {
             return this.name;
         }

@@ -53,9 +53,9 @@ namespace com.bloomberg.samples.rulemsx
             Log.LogMessage(Log.LogLevels.BASIC, "Creating DataSet: " + name);
             if (name == null || name == "") throw new ArgumentException("DataSet name cannot be null or empty");
             DataSet newDataSet = new DataSet(name);
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new DataSet " + newDataSet.getName() + " to DataSets list.");
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new DataSet " + newDataSet.GetName() + " to DataSets list.");
             dataSets.Add(newDataSet);
-            Log.LogMessage(Log.LogLevels.BASIC, "New DataSet created: " + newDataSet.getName());
+            Log.LogMessage(Log.LogLevels.BASIC, "New DataSet created: " + newDataSet.GetName());
             return newDataSet;
         }
 
@@ -64,9 +64,9 @@ namespace com.bloomberg.samples.rulemsx
             Log.LogMessage(Log.LogLevels.BASIC, "Creating RuleSet: " + name);
             if (name == null || name == "") throw new ArgumentException("DataSet name cannot be null or empty");
             RuleSet newRuleSet = new RuleSet(name);
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new RuleSet " + newRuleSet.getName() + " to RuleSets list.");
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new RuleSet " + newRuleSet.GetName() + " to RuleSets list.");
             ruleSets.Add(newRuleSet);
-            Log.LogMessage(Log.LogLevels.BASIC, "New RuleSet created: " + newRuleSet.getName());
+            Log.LogMessage(Log.LogLevels.BASIC, "New RuleSet created: " + newRuleSet.GetName());
             return newRuleSet;
         }
 
@@ -75,9 +75,9 @@ namespace com.bloomberg.samples.rulemsx
             Log.LogMessage(Log.LogLevels.BASIC, "Creating Action: " + name);
             if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
             Action newAction = new Action(name);
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.getName() + " to Actions list.");
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.GetName() + " to Actions list.");
             actions.Add(newAction);
-            Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.getName());
+            Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.GetName());
             return newAction;
         }
 
@@ -87,9 +87,9 @@ namespace com.bloomberg.samples.rulemsx
             if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
             if (executor == null) throw new ArgumentException("ActionExecutor cannot be null");
             Action newAction = new Action(name, executor);
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.getName() + " to Actions list.");
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.GetName() + " to Actions list.");
             actions.Add(newAction);
-            Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.getName() + " with executor");
+            Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.GetName() + " with executor");
             return newAction;
         }
 
@@ -123,7 +123,7 @@ namespace com.bloomberg.samples.rulemsx
         {
             foreach (RuleSet rs in ruleSets)
             {
-                if (rs.getName().Equals(name)) return rs;
+                if (rs.GetName().Equals(name)) return rs;
             }
             return null;
         }
@@ -132,7 +132,7 @@ namespace com.bloomberg.samples.rulemsx
         {
             foreach (DataSet ds in dataSets)
             {
-                if (ds.getName().Equals(name)) return ds;
+                if (ds.GetName().Equals(name)) return ds;
             }
             return null;
         }
@@ -144,7 +144,7 @@ namespace com.bloomberg.samples.rulemsx
 
             foreach (RuleSet rs in this.ruleSets)
             {
-                Log.LogMessage(Log.LogLevels.DETAILED, "Stopping RuleSet: " + rs.getName());
+                Log.LogMessage(Log.LogLevels.DETAILED, "Stopping RuleSet: " + rs.GetName());
                 if (!rs.Stop()) result = false;
             }
 

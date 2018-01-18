@@ -54,13 +54,13 @@ namespace com.bloomberg.samples.rulemsx {
 
         public void Execute(DataSet dataSet) {
 
-            Log.LogMessage(Log.LogLevels.BASIC, "Execute RuleSet " + this.name + " with DataSet " + dataSet.getName());
+            Log.LogMessage(Log.LogLevels.BASIC, "Execute RuleSet " + this.name + " with DataSet " + dataSet.GetName());
 
             if (this.executionAgent == null) {
                 Log.LogMessage(Log.LogLevels.DETAILED, "First execution, creating ExecutionAgent");
                 this.executionAgent = new ExecutionAgent(this, dataSet);
             } else {
-                Log.LogMessage(Log.LogLevels.DETAILED, "RuleSet already has ExecutionAgent, adding DataSet " + dataSet.getName());
+                Log.LogMessage(Log.LogLevels.DETAILED, "RuleSet already has ExecutionAgent, adding DataSet " + dataSet.GetName());
                 this.executionAgent.AddDataSet(dataSet);
             }
         }
