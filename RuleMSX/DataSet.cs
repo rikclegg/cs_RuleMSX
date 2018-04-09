@@ -60,7 +60,7 @@ namespace com.bloomberg.samples.rulemsx
             return this.name;
         }
 
-        public DataPoint getDataPoint(string name)
+        public DataPoint GetDataPoint(string name)
         {
             try {
                 return dataPoints[name];
@@ -70,7 +70,7 @@ namespace com.bloomberg.samples.rulemsx
             }
         }
 
-        public Dictionary<string, DataPoint> getDataPoints()
+        public Dictionary<string, DataPoint> GetDataPoints()
         {
             return this.dataPoints;
         }

@@ -27,12 +27,6 @@ namespace com.bloomberg.samples.rulemsx
     public class RuleMSX
     {
 
-        public enum DataPointState
-        {
-            STALE,
-            CURRENT
-        }
-
         List<DataSet> dataSets;
         List<RuleSet> ruleSets;
         List<Action> actions;
@@ -48,7 +42,7 @@ namespace com.bloomberg.samples.rulemsx
             Log.LogMessage(Log.LogLevels.BASIC, "Instantiating RuleMSX complete.");
         }
 
-        public DataSet createDataSet(string name)
+        public DataSet CreateDataSet(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating DataSet: " + name);
             if (name == null || name == "") throw new ArgumentException("DataSet name cannot be null or empty");
@@ -59,7 +53,7 @@ namespace com.bloomberg.samples.rulemsx
             return newDataSet;
         }
 
-        public RuleSet createRuleSet(string name)
+        public RuleSet CreateRuleSet(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating RuleSet: " + name);
             if (name == null || name == "") throw new ArgumentException("DataSet name cannot be null or empty");
@@ -70,7 +64,7 @@ namespace com.bloomberg.samples.rulemsx
             return newRuleSet;
         }
 
-        public Action createAction(string name)
+        public Action CreateAction(string name)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating Action: " + name);
             if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
@@ -81,7 +75,7 @@ namespace com.bloomberg.samples.rulemsx
             return newAction;
         }
 
-        public Action createAction(string name, ActionExecutor executor)
+        public Action CreateAction(string name, ActionExecutor executor)
         {
             Log.LogMessage(Log.LogLevels.BASIC, "Creating Action: " + name + " with executor");
             if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
@@ -93,25 +87,25 @@ namespace com.bloomberg.samples.rulemsx
             return newAction;
         }
 
-        public List<DataSet> getDataSets()
+        public List<DataSet> GetDataSets()
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Get DataSets");
             return this.dataSets;
         }
 
-        public List<RuleSet> getRuleSets()
+        public List<RuleSet> GetRuleSets()
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Get RuleSets");
             return this.ruleSets;
         }
 
-        public List<Action> getActions()
+        public List<Action> GetActions()
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Get Actions");
             return this.actions;
         }
 
-        public Action getAction(string name)
+        public Action GetAction(string name)
         {
             foreach(Action a in actions) {
                 if (a.GetName().Equals(name)) return a;
@@ -119,7 +113,7 @@ namespace com.bloomberg.samples.rulemsx
             return null;
         }
 
-        public RuleSet getRuleSet(string name)
+        public RuleSet GetRuleSet(string name)
         {
             foreach (RuleSet rs in ruleSets)
             {
@@ -128,7 +122,7 @@ namespace com.bloomberg.samples.rulemsx
             return null;
         }
 
-        public DataSet getDataSet(string name)
+        public DataSet GetDataSet(string name)
         {
             foreach (DataSet ds in dataSets)
             {
