@@ -115,8 +115,12 @@ namespace com.bloomberg.samples.rulemsx
 
                         foreach(RuleEvaluator e in wr.evaluators)
                         {
-                            if(!e.Evaluate(wr.dataSet))
+
+                            Log.LogMessage(Log.LogLevels.DETAILED, "Calling evaluator for RuleCondition: " + e.ruleCondition.GetName());
+
+                            if (!e.Evaluate(wr.dataSet))
                             {
+                                Log.LogMessage(Log.LogLevels.DETAILED, "Evaluator returned false");
                                 res = false;
                                 break;
                             }
@@ -124,7 +128,11 @@ namespace com.bloomberg.samples.rulemsx
                         
                         if(res)
                         {
-                            foreach (ActionExecutor ex in wr.executors) ex.Execute(wr.dataSet);
+                            Log.LogMessage(Log.LogLevels.DETAILED, "All RuleConditions returned true - Executing Actions");
+                            foreach (ActionExecutor ex in wr.executors)
+                            {
+                                ex.Execute(wr.dataSet);
+                            }
                         }
                     }
                 }
@@ -150,7 +158,11 @@ namespace com.bloomberg.samples.rulemsx
             {
                 if (!openSetQueue.Contains(wr))
                 {
+                    Log.LogMessage(Log.LogLevels.DETAILED, "Enqueueing WorkingRule for: " + wr.getRule().GetName());
                     openSetQueue.Add(wr);
+                } else
+                {
+                    Log.LogMessage(Log.LogLevels.DETAILED, "Not Enqueueing WorkingRule for: " + wr.getRule().GetName() + " - already in queue.");
                 }
             }
         }

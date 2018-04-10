@@ -28,17 +28,20 @@ namespace com.bloomberg.samples.rulemsx
 
             foreach(Action a in rule.GetActions())
             {
+                Log.LogMessage(Log.LogLevels.DETAILED, "Adding Executor for: " + a.GetName());
                 this.executors.Add(a.GetExecutor());
             }
 
             foreach(RuleCondition c in rule.GetConditions())
             {
                 RuleEvaluator e = c.GetEvaluator();
+                Log.LogMessage(Log.LogLevels.DETAILED, "Adding Evaluator for: " + c.GetName());
                 this.evaluators.Add(e);
 
                 foreach(String dpn in e.dependantDataPointNames)
                 {
-                    DataPoint dp = this.dataSet.getDataPoint(dpn);
+                    DataPoint dp = this.dataSet.GetDataPoint(dpn);
+                    Log.LogMessage(Log.LogLevels.DETAILED, "Adding dependent DataPointSource for: " + dp.GetName());
                     dp.GetSource().AssociateWorkingRule(this);
                 }
             }
@@ -50,6 +53,7 @@ namespace com.bloomberg.samples.rulemsx
 
         internal void EnqueueWorkingRule()
         {
+            Log.LogMessage(Log.LogLevels.DETAILED, "Call to enqueue WorkingRule for Rule : " + this.rule.GetName());
             this.agent.EnqueueWorkingRule(this);
         }
     }

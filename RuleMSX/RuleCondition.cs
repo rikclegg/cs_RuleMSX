@@ -23,7 +23,7 @@ using System;
 namespace com.bloomberg.samples.rulemsx
 {
 
-    public abstract class RuleCondition
+    public class RuleCondition
     {
         private String name;
         private RuleEvaluator ruleEvaluator;
