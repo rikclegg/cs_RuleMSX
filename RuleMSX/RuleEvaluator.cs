@@ -35,7 +35,7 @@ namespace com.bloomberg.samples.rulemsx {
         }
 
         public void AddDependantDataPointName(string name) {
-            Log.LogMessage(Log.LogLevels.DETAILED, "Adding dependent DataPoint name to Evaluator");
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding dependent DataPoint " + name + " to Evaluator");
             this.dependantDataPointNames.Add(name);
         }
     }

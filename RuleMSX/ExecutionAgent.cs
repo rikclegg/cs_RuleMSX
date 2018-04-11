@@ -120,21 +120,28 @@ namespace com.bloomberg.samples.rulemsx
 
                             if (!e.Evaluate(wr.dataSet))
                             {
-                                Log.LogMessage(Log.LogLevels.DETAILED, "Evaluator returned false");
                                 res = false;
                                 break;
                             }
                         }
-                        
-                        if(res)
+
+                        Log.LogMessage(Log.LogLevels.DETAILED, "Checking results of rule evaluations...");
+
+                        if (res)
                         {
                             Log.LogMessage(Log.LogLevels.DETAILED, "All RuleConditions returned true - Executing Actions");
                             foreach (ActionExecutor ex in wr.executors)
                             {
                                 ex.Execute(wr.dataSet);
                             }
+                        } else
+                        {
+                            Log.LogMessage(Log.LogLevels.DETAILED, "Evaluator returned false");
                         }
                     }
+
+                    Log.LogMessage(Log.LogLevels.DETAILED, "Execution cycle complete, OpenSet empty");
+
                 }
             }
         }
@@ -149,6 +156,9 @@ namespace com.bloomberg.samples.rulemsx
                 this.workingSet.Add(wr);
                 this.EnqueueWorkingRule(wr);
             }
+
+            Log.LogMessage(Log.LogLevels.DETAILED, "Finished Ingesting dataSet " + dataSet.GetName());
+
         }
 
         internal void EnqueueWorkingRule(WorkingRule wr)

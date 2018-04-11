@@ -41,10 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bloomberglp.Blpapi">
-      <HintPath>..\..\..\..\blp\DAPI\APIv3\DotnetAPI\v3.8.9.2\lib\Bloomberglp.Blpapi.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\blp\DAPI\APIv3\DotnetAPI\v3.8.9.2\lib\Bloomberglp.Blpapi.dll</HintPath>
     </Reference>
     <Reference Include="EasyMSX">
-      <HintPath>..\..\EasyMSXCSharp\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
+      <HintPath>..\..\emsxapi_cs_EasyMSX\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
     </Reference>
     <Reference Include="RuleMSX">
       <HintPath>..\RuleMSX\bin\Debug\RuleMSX.dll</HintPath>
