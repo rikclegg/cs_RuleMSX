@@ -139,9 +139,38 @@ namespace RMSXRouteFillTest
             log("Creating RouteLastShares DataPoint");
             newDataSet.AddDataPoint("RouteLastShares", new EMSXFieldDataPointSource(this, r.field("EMSX_LAST_SHARES")));
 
+            log("Creating LastFillShown DataPoint");
+            newDataSet.AddDataPoint("LastFillShown", new GenericIntegerDataPointSource(this, 0));
+
             log("Executing RuleSet DemoRouteRuleSet with DataSet " + newDataSet.GetName());
             this.rmsx.GetRuleSet("DemoRouteRuleSet").Execute(newDataSet);
 
+        }
+
+        class GenericIntegerDataPointSource: DataPointSource
+        {
+            int value;
+            RMSXRouteFillTest parent;
+
+            internal GenericIntegerDataPointSource(RMSXRouteFillTest parent, int initialValue)
+            {
+                parent.log("Creating new GenericIntegerDataPointSource with initial value: " + initialValue);
+
+                this.value = initialValue;
+                this.parent = parent;
+            }
+
+            public override object GetValue()
+            {
+                this.parent.log("Returning value for GenericIntegerDataPointSource - Value: " + this.value);
+                return this.value;
+            }
+
+            public void setValue(int newValue)
+            {
+                this.value = newValue;
+                this.SetStale();
+            }
         }
 
         class EMSXFieldDataPointSource : DataPointSource, NotificationHandler
@@ -168,7 +197,7 @@ namespace RMSXRouteFillTest
 
             public override object GetValue()
             {
-                this.parent.log("Returning value for field " + this.field.name() + "\tValue: " + this.value);
+                //this.parent.log("Returning value for field " + this.field.name() + "\tValue: " + this.value);
                 return this.value;
             }
 
@@ -185,12 +214,12 @@ namespace RMSXRouteFillTest
                 this.previousValue = this.value;
                 this.value = notification.getFieldChanges()[0].newValue;
 
-                this.parent.log(">> Value: " + this.value + "\tPrevious: " + this.previousValue);
+                this.parent.log("-- Value: " + this.value + "\tPrevious: " + this.previousValue);
                 if(this.previousValue != this.value)
                 {
-                    this.parent.log(">> Values differ - calling SetStale");
+                    this.parent.log("-- Values differ - calling SetStale");
                     this.SetStale();
-                    this.parent.log(">> Returned from SetStale");
+                    this.parent.log("-- Returned from SetStale");
                 }
             }
         }
@@ -220,6 +249,7 @@ namespace RMSXRouteFillTest
                 EMSXFieldDataPointSource routeFilledSource = (EMSXFieldDataPointSource) dataSet.GetDataPoint("RouteFilled").GetSource();
                 EMSXFieldDataPointSource routeLastSharesSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteLastShares").GetSource();
                 EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource) dataSet.GetDataPoint("RouteStatus").GetSource();
+                GenericIntegerDataPointSource lastfill = (GenericIntegerDataPointSource)dataSet.GetDataPoint("LastFillShown").GetSource();
 
                 int currentFilled = Convert.ToInt32(routeFilledSource.GetValue());
                 int previousFilled = Convert.ToInt32(routeFilledSource.GetPreviousValue());
@@ -230,9 +260,11 @@ namespace RMSXRouteFillTest
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
-                this.parent.log(">> RouteFillOccurred DataSet values : currentFilled=" + currentFilled + "|previousFilled=" + previousFilled + "|currentLastShares=" + currentLastShares + "|previousLastShares=" + previousLastShares + "|currentStatus=" + currentStatus + "|previousStatus=" + previousStatus);
+                int lastFillShown = Convert.ToInt32(dataSet.GetDataPoint("LastFillShown").GetValue());
 
-                bool res = ((currentFilled != previousFilled) && previousStatus != null);
+                this.parent.log("RouteFillOccurred DataSet values : currentFilled=" + currentFilled + "|previousFilled=" + previousFilled + "|currentLastShares=" + currentLastShares + "|previousLastShares=" + previousLastShares + "|currentStatus=" + currentStatus + "|previousStatus=" + previousStatus);
+
+                bool res = ((currentFilled != previousFilled) && previousStatus != null && currentFilled != lastFillShown);
 
                 this.parent.log("RouteFillOccurred returning value: " + res);
 
@@ -252,13 +284,17 @@ namespace RMSXRouteFillTest
 
             public void Execute(DataSet dataSet)
             {
-                this.parent.log("ShowRouteFill Action Executor: ");
-                this.parent.log("> RouteStatus: " + dataSet.GetDataPoint("RouteStatus").GetValue());
-                this.parent.log("> RouteOrderNumber: " + dataSet.GetDataPoint("RouteOrderNumber").GetValue());
-                this.parent.log("> RouteID: " + dataSet.GetDataPoint("RouteID").GetValue());
-                this.parent.log("> RouteFilled: " + dataSet.GetDataPoint("RouteFilled").GetValue());
-                this.parent.log("> RouteAmount: " + dataSet.GetDataPoint("RouteAmount").GetValue());
-                this.parent.log("> RouteLastShares: " + dataSet.GetDataPoint("RouteLastShares").GetValue());
+                this.parent.log(">>> ShowRouteFill Action Executor: ");
+                this.parent.log(">>> RouteStatus: " + dataSet.GetDataPoint("RouteStatus").GetValue());
+                this.parent.log(">>> RouteOrderNumber: " + dataSet.GetDataPoint("RouteOrderNumber").GetValue());
+                this.parent.log(">>> RouteID: " + dataSet.GetDataPoint("RouteID").GetValue());
+                this.parent.log(">>> RouteFilled: " + dataSet.GetDataPoint("RouteFilled").GetValue());
+                this.parent.log(">>> RouteAmount: " + dataSet.GetDataPoint("RouteAmount").GetValue());
+                this.parent.log(">>> RouteLastShares: " + dataSet.GetDataPoint("RouteLastShares").GetValue());
+
+                GenericIntegerDataPointSource lastfill = (GenericIntegerDataPointSource)dataSet.GetDataPoint("LastFillShown").GetSource();
+
+                lastfill.setValue(Convert.ToInt32(dataSet.GetDataPoint("RouteFilled").GetValue()));
             }
         }
     }
