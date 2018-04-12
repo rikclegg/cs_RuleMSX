@@ -67,9 +67,9 @@ namespace RMSXRouteFillTest
         {
             log("Building rules...");
 
-            log("Creating RuleCondition condRouteFillOccured");
-            RuleCondition condRouteFillOccured = new RuleCondition("RouteFillOccured", new RouteFillOccured(this));
-            log("RuleCondition condRouteFillOccured created.");
+            log("Creating RuleCondition condRouteFillOccurred");
+            RuleCondition condRouteFillOccurred = new RuleCondition("RouteFillOccurred", new RouteFillOccurred(this));
+            log("RuleCondition condRouteFillOccurred created.");
 
             log("Creating Action actShowRouteFill");
             Action actShowRouteFill = this.rmsx.CreateAction("ShowRouteFill", new ShowRouteFill(this));
@@ -83,8 +83,8 @@ namespace RMSXRouteFillTest
             Rule ruleRouteFilled = demoRouteRuleSet.AddRule("RouteFilled");
             log("Rule ruleRouteFilled created");
 
-            log("Assign RuleCondition condRouteFillOccured to Rule ruleRouteFilled");
-            ruleRouteFilled.AddRuleCondition(condRouteFillOccured);
+            log("Assign RuleCondition condRouteFillOccurred to Rule ruleRouteFilled");
+            ruleRouteFilled.AddRuleCondition(condRouteFillOccurred);
 
             log("Assign Action actShowRouteFill to Rule ruleRouteFilled");
             ruleRouteFilled.AddAction(actShowRouteFill);
@@ -195,14 +195,14 @@ namespace RMSXRouteFillTest
             }
         }
 
-        class RouteFillOccured : RuleEvaluator
+        class RouteFillOccurred : RuleEvaluator
         {
             RMSXRouteFillTest parent;
 
-            public RouteFillOccured(RMSXRouteFillTest parent)
+            public RouteFillOccurred(RMSXRouteFillTest parent)
             {
                 this.parent = parent;
-                this.parent.log("Creating new RouteFillOccured");
+                this.parent.log("Creating new RouteFillOccurred");
 
                 this.parent.log("Adding dependency for RouteStatus");
                 this.AddDependantDataPointName("RouteStatus");
@@ -215,7 +215,7 @@ namespace RMSXRouteFillTest
 
             public override bool Evaluate(DataSet dataSet)
             {
-                this.parent.log("Evaluating RouteFillOccured...");
+                this.parent.log("Evaluating RouteFillOccurred...");
 
                 EMSXFieldDataPointSource routeFilledSource = (EMSXFieldDataPointSource) dataSet.GetDataPoint("RouteFilled").GetSource();
                 EMSXFieldDataPointSource routeLastSharesSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteLastShares").GetSource();
@@ -225,16 +225,16 @@ namespace RMSXRouteFillTest
                 int previousFilled = Convert.ToInt32(routeFilledSource.GetPreviousValue());
 
                 int currentLastShares = Convert.ToInt32(routeLastSharesSource.GetValue());
-                int previousLastShares = Convert.ToInt32(routeLastSharesSource.GetValue());
+                int previousLastShares = Convert.ToInt32(routeLastSharesSource.GetPreviousValue());
 
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
-                String previousStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
-                this.parent.log(">> RouteFillOccured DataSet values : currentFilled=" + currentFilled + "|previousFilled=" + previousFilled + "|currentLastShares=" + currentLastShares + "|previousLastShares=" + previousLastShares + "|currentStatus=" + currentStatus + "|previousStatus=" + previousStatus);
+                this.parent.log(">> RouteFillOccurred DataSet values : currentFilled=" + currentFilled + "|previousFilled=" + previousFilled + "|currentLastShares=" + currentLastShares + "|previousLastShares=" + previousLastShares + "|currentStatus=" + currentStatus + "|previousStatus=" + previousStatus);
 
                 bool res = ((currentFilled != previousFilled) && previousStatus != null);
 
-                this.parent.log("RouteFillOccured returning value: " + res);
+                this.parent.log("RouteFillOccurred returning value: " + res);
 
                 return res;
             }
