@@ -7,7 +7,7 @@ using LogRmsx = com.bloomberg.samples.rulemsx.Log;
 
 namespace RMSXEMSXRouteStateIdentifier
 {
-    class RMSXRouteFillTest: NotificationHandler
+    class RMSXEMSXRouteStateIdentifier : NotificationHandler
     {
 
         RuleMSX rmsx;
@@ -15,7 +15,7 @@ namespace RMSXEMSXRouteStateIdentifier
 
         static void Main(string[] args)
         {
-            RMSXRouteFillTest Test = new RMSXRouteFillTest();
+            RMSXEMSXRouteStateIdentifier Test = new RMSXEMSXRouteStateIdentifier();
             Test.Run();
 
             System.Console.WriteLine("Press enter to terminate...");
@@ -33,6 +33,8 @@ namespace RMSXEMSXRouteStateIdentifier
 
         private void Run()
         {
+
+            log("RMSXEMSXRouteStateIdentifier - Identify state changes in EMSX routes\n\n");
 
             log("Initializing RuleMSX...");
             this.rmsx = new RuleMSX();
@@ -105,7 +107,9 @@ namespace RMSXEMSXRouteStateIdentifier
                     if ((notification.getRoute().field("EMSX_STATUS").value() == "FILLED") || (notification.getRoute().field("EMSX_STATUS").value() == "CANCEL"))
                     {
                         log("Route " + notification.getRoute().field("EMSX_SEQUENCE").value() + "." + notification.getRoute().field("EMSX_ROUTE_ID").value() + " is " + notification.getRoute().field("EMSX_STATUS").value() + " - Ignoring");
-                    } else { 
+                    }
+                    else
+                    {
                         log("Notification is NEW or INITIAL_PAINT");
                         log("EasyMSX Notification Route -> NEW/INIT_PAINT: " + notification.getRoute().field("EMSX_SEQUENCE").value() + "." + notification.getRoute().field("EMSX_ROUTE_ID").value());
                         this.parseRoute(notification.getRoute());
@@ -147,12 +151,12 @@ namespace RMSXEMSXRouteStateIdentifier
 
         }
 
-        class GenericIntegerDataPointSource: DataPointSource
+        class GenericIntegerDataPointSource : DataPointSource
         {
             int value;
-            RMSXRouteFillTest parent;
+            RMSXEMSXRouteStateIdentifier parent;
 
-            internal GenericIntegerDataPointSource(RMSXRouteFillTest parent, int initialValue)
+            internal GenericIntegerDataPointSource(RMSXEMSXRouteStateIdentifier parent, int initialValue)
             {
                 parent.log("Creating new GenericIntegerDataPointSource with initial value: " + initialValue);
 
@@ -178,9 +182,9 @@ namespace RMSXEMSXRouteStateIdentifier
             Field field;
             String value;
             String previousValue;
-            RMSXRouteFillTest parent;
+            RMSXEMSXRouteStateIdentifier parent;
 
-            internal EMSXFieldDataPointSource(RMSXRouteFillTest parent, Field field)
+            internal EMSXFieldDataPointSource(RMSXEMSXRouteStateIdentifier parent, Field field)
             {
                 this.parent = parent;
                 this.field = field;
@@ -215,7 +219,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 this.value = notification.getFieldChanges()[0].newValue;
 
                 this.parent.log("-- Value: " + this.value + "\tPrevious: " + this.previousValue);
-                if(this.previousValue != this.value)
+                if (this.previousValue != this.value)
                 {
                     this.parent.log("-- Values differ - calling SetStale");
                     this.SetStale();
@@ -226,9 +230,9 @@ namespace RMSXEMSXRouteStateIdentifier
 
         class RouteFillOccurred : RuleEvaluator
         {
-            RMSXRouteFillTest parent;
+            RMSXEMSXRouteStateIdentifier parent;
 
-            public RouteFillOccurred(RMSXRouteFillTest parent)
+            public RouteFillOccurred(RMSXEMSXRouteStateIdentifier parent)
             {
                 this.parent = parent;
                 this.parent.log("Creating new RouteFillOccurred");
@@ -246,9 +250,9 @@ namespace RMSXEMSXRouteStateIdentifier
             {
                 this.parent.log("Evaluating RouteFillOccurred...");
 
-                EMSXFieldDataPointSource routeFilledSource = (EMSXFieldDataPointSource) dataSet.GetDataPoint("RouteFilled").GetSource();
+                EMSXFieldDataPointSource routeFilledSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteFilled").GetSource();
                 EMSXFieldDataPointSource routeLastSharesSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteLastShares").GetSource();
-                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource) dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
                 GenericIntegerDataPointSource lastfill = (GenericIntegerDataPointSource)dataSet.GetDataPoint("LastFillShown").GetSource();
 
                 int currentFilled = Convert.ToInt32(routeFilledSource.GetValue());
@@ -274,9 +278,9 @@ namespace RMSXEMSXRouteStateIdentifier
 
         class ShowRouteFill : ActionExecutor
         {
-            RMSXRouteFillTest parent;
+            RMSXEMSXRouteStateIdentifier parent;
 
-            public ShowRouteFill(RMSXRouteFillTest parent)
+            public ShowRouteFill(RMSXEMSXRouteStateIdentifier parent)
             {
                 parent.log("Creating new ShowRouteFill action executor.");
                 this.parent = parent;
