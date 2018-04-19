@@ -38,7 +38,7 @@ namespace RMSXEMSXRouteStateIdentifier
 
             log("Initializing RuleMSX...");
             this.rmsx = new RuleMSX();
-            LogRmsx.logLevel = LogRmsx.LogLevels.DETAILED;
+            LogRmsx.logLevel = LogRmsx.LogLevels.NONE;
             LogRmsx.logPrefix = "(RuleMSX..........)";
 
             log("RuleMSX initialized.");
@@ -229,34 +229,11 @@ namespace RMSXEMSXRouteStateIdentifier
             newDataSet.AddDataPoint("RouteStatus", new EMSXFieldDataPointSource(r.field("EMSX_STATUS")));
             newDataSet.AddDataPoint("RouteOrderNumber", new EMSXFieldDataPointSource(r.field("EMSX_SEQUENCE")));
             newDataSet.AddDataPoint("RouteID", new EMSXFieldDataPointSource(r.field("EMSX_ROUTE_ID")));
-            newDataSet.AddDataPoint("RouteFilled", new EMSXFieldDataPointSource(r.field("EMSX_FILLED")));
-            newDataSet.AddDataPoint("RouteAmount", new EMSXFieldDataPointSource(r.field("EMSX_AMOUNT")));
-            newDataSet.AddDataPoint("RouteLastShares", new EMSXFieldDataPointSource(r.field("EMSX_LAST_SHARES")));
-            newDataSet.AddDataPoint("LastFillShown", new GenericIntegerDataPointSource(0));
+            newDataSet.AddDataPoint("RouteWorking", new EMSXFieldDataPointSource(r.field("EMSX_WORKING")));
+            newDataSet.AddDataPoint("RouteBrokerStatus", new EMSXFieldDataPointSource(r.field("EMSX_BROKER_STATUS")));
             this.rmsx.GetRuleSet("RouteStates").Execute(newDataSet);
         }
 
-
-        class GenericIntegerDataPointSource : DataPointSource
-        {
-            int value;
-
-            internal GenericIntegerDataPointSource(int initialValue)
-            {
-                this.value = initialValue;
-            }
-
-            public override object GetValue()
-            {
-                return this.value;
-            }
-
-            public void setValue(int newValue)
-            {
-                this.value = newValue;
-                this.SetStale();
-            }
-        }
 
         class EMSXFieldDataPointSource : DataPointSource, NotificationHandler
         {
@@ -468,7 +445,6 @@ namespace RMSXEMSXRouteStateIdentifier
             public RouteInitPaintFilled()
             {
                 this.AddDependantDataPointName("RouteStatus");
-                this.AddDependantDataPointName("RouteWorking");
             }
 
             public override bool Evaluate(DataSet dataSet)
@@ -482,6 +458,375 @@ namespace RMSXEMSXRouteStateIdentifier
             }
         }
 
+
+        class RouteInitPaintWorking : RuleEvaluator
+        {
+            public RouteInitPaintWorking()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == null) && (currentStatus == "WORKING"));
+            }
+        }
+
+
+        class RouteInitPaintPartfill : RuleEvaluator
+        {
+            public RouteInitPaintPartfill()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == null) && (currentStatus == "PARTFILL"));
+            }
+        }
+
+        class RouteInitPaintCancelRequested : RuleEvaluator
+        {
+            public RouteInitPaintCancelRequested()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == null) && (currentStatus == "CXLREQ"));
+            }
+        }
+
+
+        class RouteCancelRequestedOnWorking : RuleEvaluator
+        {
+            public RouteCancelRequestedOnWorking()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "WORKING") && (currentStatus == "CXLREQ"));
+            }
+        }
+
+
+        class RouteCancelRejectedOnWorkingFromRequest : RuleEvaluator
+        {
+            public RouteCancelRejectedOnWorkingFromRequest()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLREQ") && (currentStatus == "WORKING"));
+            }
+        }
+
+
+        class RouteCancelBrokerAck : RuleEvaluator
+        {
+            public RouteCancelBrokerAck()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLREQ") && (currentStatus == "CXLPEN"));
+            }
+        }
+
+
+        class RouteCancelRejectedOnWorkingFromPending : RuleEvaluator
+        {
+            public RouteCancelRejectedOnWorkingFromPending()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLPEN") && (currentStatus == "WORKING"));
+            }
+        }
+
+
+        class RouteCancelFromRequested : RuleEvaluator
+        {
+            public RouteCancelFromRequested()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLREQ") && (currentStatus == "CANCEL"));
+            }
+        }
+
+        class RouteCancelFromPending : RuleEvaluator
+        {
+            public RouteCancelFromPending()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLPEN") && (currentStatus == "CANCEL"));
+            }
+        }
+
+        class RouteCancelRequestedOnPartfill : RuleEvaluator
+        {
+            public RouteCancelRequestedOnPartfill()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "PARTFILL") && (currentStatus == "CXLREQ"));
+            }
+        }
+
+
+        class RouteCancelRejectedOnPartfillFromRequest : RuleEvaluator
+        {
+            public RouteCancelRejectedOnPartfillFromRequest()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLREQ") && (currentStatus == "PARTFILL"));
+            }
+        }
+
+
+        class RouteCancelRejectedOnPartfillFromPending : RuleEvaluator
+            {
+            public RouteCancelRejectedOnPartfillFromPending()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLPEN") && (currentStatus == "PARTFILL"));
+            }
+        }
+
+        class RouteModifyRequestedOnWorking : RuleEvaluator
+        {
+            public RouteModifyRequestedOnWorking()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "WORKING") && (currentStatus == "CXLRPRQ"));
+            }
+        }
+
+
+        class RouteModifyBrokerAck : RuleEvaluator
+        {
+            public RouteModifyBrokerAck()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "CXLRPRQ") && (currentStatus == "REPPEN"));
+            }
+        }
+
+
+        class RouteModifyRejectedOnWorking : RuleEvaluator
+        {
+            public RouteModifyRejectedOnWorking()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteBrokerStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeBrokerStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteBrokerStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                String currentBrokerStatus = Convert.ToString(routeBrokerStatusSource.GetValue());
+
+                return ((previousStatus == "REPPEN") && (currentStatus == "WORKING") && (currentBrokerStatus=="CXLRPRJ"));
+            }
+        }
+
+        class RouteModifyAppliedOnWorking : RuleEvaluator
+        {
+            public RouteModifyAppliedOnWorking()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteBrokerStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeBrokerStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteBrokerStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                String currentBrokerStatus = Convert.ToString(routeBrokerStatusSource.GetValue());
+
+                return ((previousStatus == "REPPEN") && (currentStatus == "WORKING") && (currentBrokerStatus == "MODIFIED"));
+            }
+        }
+
+        class RouteModifyRequestedOnPartfill : RuleEvaluator
+        {
+            public RouteModifyRequestedOnPartfill()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "PARTFILL") && (currentStatus == "CXLRPRQ"));
+            }
+        }
+
+
+        class RouteModifyRejectedOnPartfill : RuleEvaluator
+        {
+            public RouteModifyRejectedOnPartfill()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteBrokerStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeBrokerStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteBrokerStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                String currentBrokerStatus = Convert.ToString(routeBrokerStatusSource.GetValue());
+
+                return ((previousStatus == "REPPEN") && (currentStatus == "PARTFILL") && (currentBrokerStatus == "CXLRPRJ"));
+            }
+        }
+
+        class RouteModifyAppliedOnPartfill : RuleEvaluator
+        {
+            public RouteModifyAppliedOnPartfill()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteBrokerStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeBrokerStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteBrokerStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                String currentBrokerStatus = Convert.ToString(routeBrokerStatusSource.GetValue());
+
+                return ((previousStatus == "REPPEN") && (currentStatus == "PARTFILL") && (currentBrokerStatus == "MODIFIED"));
+            }
+        }
 
     }
 }
