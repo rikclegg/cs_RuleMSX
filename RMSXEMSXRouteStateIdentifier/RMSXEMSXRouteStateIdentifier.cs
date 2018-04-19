@@ -69,6 +69,119 @@ namespace RMSXEMSXRouteStateIdentifier
         {
             log("Building rules...");
 
+            log("Creating RuleSet rsRouteStates");
+            RuleSet rsRouteStates = this.rmsx.CreateRuleSet("RouteStates");
+
+            log("Creating rule for ROUTE_NEW");
+            Rule ruleRouteNew = rsRouteStates.AddRule("RouteNew");
+            ruleRouteNew.AddRuleCondition(new RuleCondition("RouteNew", new RouteNew()));
+            ruleRouteNew.AddAction(this.rmsx.CreateAction("ShowRouteNew", new ShowRouteState(this, "New Route")));
+
+            log("Creating rule for ROUTE_SET_WORKING_AMOUNT");
+            Rule ruleRouteSetWorkingAmount = rsRouteStates.AddRule("RouteSetWorkingAmount");
+            ruleRouteSetWorkingAmount.AddRuleCondition(new RuleCondition("RouteSetWorkingAmount", new RouteSetWorkingAmount()));
+            ruleRouteSetWorkingAmount.AddAction(this.rmsx.CreateAction("ShowRouteSetWorkingAmount", new ShowRouteState(this, "Setting working amount")));
+
+            log("Creating rule for ROUTE_NEW_BROKER_ACK");
+            Rule ruleRouteNewBrokerAck = rsRouteStates.AddRule("RouteNewBrokerAck");
+            ruleRouteNewBrokerAck.AddRuleCondition(new RuleCondition("RouteNewBrokerAck", new RouteNewBrokerAck()));
+            ruleRouteNewBrokerAck.AddAction(this.rmsx.CreateAction("ShowRouteNewBrokerAck", new ShowRouteState(this, "Broker acknowledged new route")));
+
+            log("Creating rule for ROUTE_FILL_FIRST_MULTI");
+            Rule ruleRouteFillFirstMulti = rsRouteStates.AddRule("RouteFillFirstMulti");
+            ruleRouteFillFirstMulti.AddRuleCondition(new RuleCondition("RouteFillFirstMulti", new RouteFillFirstMulti()));
+            ruleRouteFillFirstMulti.AddAction(this.rmsx.CreateAction("ShowRouteFillFirstMulti", new ShowRouteState(this, "First partial fill")));
+
+            log("Creating rule for ROUTE_FILL_MULTI");
+            Rule ruleRouteFillMulti = rsRouteStates.AddRule("RouteFillMulti");
+            ruleRouteFillMulti.AddRuleCondition(new RuleCondition("RouteFillMulti", new RouteFillMulti()));
+            ruleRouteFillMulti.AddAction(this.rmsx.CreateAction("ShowRouteFillMulti", new ShowRouteState(this, "Partial fill")));
+
+            log("Creating rule for ROUTE_FILL_FINAL_MULTI");
+            Rule ruleRouteFillFinalMulti = rsRouteStates.AddRule("RouteFillFinalMulti");
+            ruleRouteFillFinalMulti.AddRuleCondition(new RuleCondition("RouteFillFinalMulti", new RouteFillFinalMulti()));
+            ruleRouteFillFinalMulti.AddAction(this.rmsx.CreateAction("ShowRouteFillMulti", new ShowRouteState(this, "Final partial fill. Route filled")));
+
+            log("Creating rule for ROUTE_FILL_FIRST_FULL");
+            Rule ruleRouteFillFirstFull = rsRouteStates.AddRule("RouteFillFirstFull");
+            ruleRouteFillFirstFull.AddRuleCondition(new RuleCondition("RouteFillFirstFull", new RouteFillFirstFull()));
+            ruleRouteFillFirstFull.AddAction(this.rmsx.CreateAction("ShowRouteFillMulti", new ShowRouteState(this, "Single full fill. Route filled")));
+
+            log("Creating rule for ROUTE_INIT_PAINT_FILLED");
+            Rule ruleRouteInitPaintFilled = rsRouteStates.AddRule("RouteInitPaintFilled");
+            ruleRouteInitPaintFilled.AddRuleCondition(new RuleCondition("RouteInitPaintFilled", new RouteInitPaintFilled()));
+            ruleRouteInitPaintFilled.AddAction(this.rmsx.CreateAction("ShowRouteFillMulti", new ShowRouteState(this, "Initial paint shows route Filled")));
+
+            log("Creating rule for ROUTE_INIT_PAINT_WORKING");
+            Rule ruleRouteInitPaintWorking = rsRouteStates.AddRule("RouteInitPaintWorking");
+            ruleRouteInitPaintWorking.AddRuleCondition(new RuleCondition("RouteInitPaintWorking", new RouteInitPaintWorking()));
+            ruleRouteInitPaintWorking.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintWorking", new ShowRouteState(this, "Initial paint shows route Working")));
+
+            log("Creating rule for ROUTE_INIT_PAINT_PARTFILL");
+            Rule ruleRouteInitPaintPartfill = rsRouteStates.AddRule("RouteInitPaintPartfill");
+            ruleRouteInitPaintPartfill.AddRuleCondition(new RuleCondition("RouteInitPaintPartfill", new RouteInitPaintPartfill()));
+            ruleRouteInitPaintPartfill.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintPartfill", new ShowRouteState(this, "Initial paint shows route Partfilled")));
+
+            log("Creating rule for ROUTE_INIT_PAINT_CANCEL_REQUESTED");
+            Rule ruleRouteInitPaintCancelRequested = rsRouteStates.AddRule("RouteInitPaintCancelRequested");
+            ruleRouteInitPaintCancelRequested.AddRuleCondition(new RuleCondition("RouteInitPaintCancelRequested", new RouteInitPaintCancelRequested()));
+            ruleRouteInitPaintCancelRequested.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintCancelRequested", new ShowRouteState(this, "Initial paint shows route is awaiting cancel")));
+
+            log("Creating rule condition for ROUTE_INIT_PAINT_CANCEL_REQUESTED");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_REQUESTED_ON_WORKING");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_REQUEST");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_BROKER_ACK");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_PENDING");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_FROM_REQUESTED");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_FROM_PENDING");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_REQUESTED_ON_PARTFILL");
+
+
+            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_PARTFILL);
+
+
+            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_PARTFILL);
+
+
+            log("Creating rule condition for ROUTE_MODIFY_REQUESTED_ON_WORKING
+
+
+            log("Creating rule condition for ROUTE_MODIFY_BROKER_ACK
+
+
+            log("Creating rule condition for ROUTE_MODIFY_REJECTED_ON_WORKING
+
+
+
+            log("Creating rule condition for ROUTE_MODIFY_APPLIED_ON_WORKING
+
+
+
+            log("Creating rule condition for ROUTE_MODIFY_REQUESTED_ON_PARTFILL
+
+
+            log("Creating rule condition for ROUTE_MODIFY_REJECTED_ON_PARTFILL
+
+
+
+            log("Creating rule condition for ROUTE_MODIFY_APPLIED_ON_PARTFILL
+
+
+
             log("Creating RuleCondition condRouteFillOccurred");
             RuleCondition condRouteFillOccurred = new RuleCondition("RouteFillOccurred", new RouteFillOccurred(this));
             log("RuleCondition condRouteFillOccurred created.");
@@ -98,75 +211,40 @@ namespace RMSXEMSXRouteStateIdentifier
         public void processNotification(Notification notification)
         {
 
-            log("EasyMSX notification recieved...");
             if (notification.category == Notification.NotificationCategory.ROUTE)
             {
-                log("Notification is at ROUTE level");
                 if ((notification.type == Notification.NotificationType.NEW) || (notification.type == Notification.NotificationType.INITIALPAINT))
                 {
-                    if ((notification.getRoute().field("EMSX_STATUS").value() == "FILLED") || (notification.getRoute().field("EMSX_STATUS").value() == "CANCEL"))
-                    {
-                        log("Route " + notification.getRoute().field("EMSX_SEQUENCE").value() + "." + notification.getRoute().field("EMSX_ROUTE_ID").value() + " is " + notification.getRoute().field("EMSX_STATUS").value() + " - Ignoring");
-                    }
-                    else
-                    {
-                        log("Notification is NEW or INITIAL_PAINT");
-                        log("EasyMSX Notification Route -> NEW/INIT_PAINT: " + notification.getRoute().field("EMSX_SEQUENCE").value() + "." + notification.getRoute().field("EMSX_ROUTE_ID").value());
-                        this.parseRoute(notification.getRoute());
-                    }
+                    this.parseRoute(notification.getRoute());
                 }
             }
         }
 
         public void parseRoute(Route r)
         {
-            log("Parse Route: " + r.field("EMSX_SEQUENCE").value() + "." + r.field("EMSX_ROUTE_ID").value());
-
-            log("Creating newDataSet");
             DataSet newDataSet = this.rmsx.CreateDataSet("DS_RT_" + r.field("EMSX_SEQUENCE").value() + "." + r.field("EMSX_ROUTE_ID").value());
-
-            log("Creating RouteStatus DataPoint");
-            newDataSet.AddDataPoint("RouteStatus", new EMSXFieldDataPointSource(this, r.field("EMSX_STATUS")));
-
-            log("Creating RouteOrderNumber DataPoint");
-            newDataSet.AddDataPoint("RouteOrderNumber", new EMSXFieldDataPointSource(this, r.field("EMSX_SEQUENCE")));
-
-            log("Creating RouteID DataPoint");
-            newDataSet.AddDataPoint("RouteID", new EMSXFieldDataPointSource(this, r.field("EMSX_ROUTE_ID")));
-
-            log("Creating RouteFilled DataPoint");
-            newDataSet.AddDataPoint("RouteFilled", new EMSXFieldDataPointSource(this, r.field("EMSX_FILLED")));
-
-            log("Creating RouteAmount DataPoint");
-            newDataSet.AddDataPoint("RouteAmount", new EMSXFieldDataPointSource(this, r.field("EMSX_AMOUNT")));
-
-            log("Creating RouteLastShares DataPoint");
-            newDataSet.AddDataPoint("RouteLastShares", new EMSXFieldDataPointSource(this, r.field("EMSX_LAST_SHARES")));
-
-            log("Creating LastFillShown DataPoint");
-            newDataSet.AddDataPoint("LastFillShown", new GenericIntegerDataPointSource(this, 0));
-
-            log("Executing RuleSet DemoRouteRuleSet with DataSet " + newDataSet.GetName());
-            this.rmsx.GetRuleSet("DemoRouteRuleSet").Execute(newDataSet);
-
+            newDataSet.AddDataPoint("RouteStatus", new EMSXFieldDataPointSource(r.field("EMSX_STATUS")));
+            newDataSet.AddDataPoint("RouteOrderNumber", new EMSXFieldDataPointSource(r.field("EMSX_SEQUENCE")));
+            newDataSet.AddDataPoint("RouteID", new EMSXFieldDataPointSource(r.field("EMSX_ROUTE_ID")));
+            newDataSet.AddDataPoint("RouteFilled", new EMSXFieldDataPointSource(r.field("EMSX_FILLED")));
+            newDataSet.AddDataPoint("RouteAmount", new EMSXFieldDataPointSource(r.field("EMSX_AMOUNT")));
+            newDataSet.AddDataPoint("RouteLastShares", new EMSXFieldDataPointSource(r.field("EMSX_LAST_SHARES")));
+            newDataSet.AddDataPoint("LastFillShown", new GenericIntegerDataPointSource(0));
+            this.rmsx.GetRuleSet("RouteStates").Execute(newDataSet);
         }
+
 
         class GenericIntegerDataPointSource : DataPointSource
         {
             int value;
-            RMSXEMSXRouteStateIdentifier parent;
 
-            internal GenericIntegerDataPointSource(RMSXEMSXRouteStateIdentifier parent, int initialValue)
+            internal GenericIntegerDataPointSource(int initialValue)
             {
-                parent.log("Creating new GenericIntegerDataPointSource with initial value: " + initialValue);
-
                 this.value = initialValue;
-                this.parent = parent;
             }
 
             public override object GetValue()
             {
-                this.parent.log("Returning value for GenericIntegerDataPointSource - Value: " + this.value);
                 return this.value;
             }
 
@@ -182,123 +260,65 @@ namespace RMSXEMSXRouteStateIdentifier
             Field field;
             String value;
             String previousValue;
-            RMSXEMSXRouteStateIdentifier parent;
 
-            internal EMSXFieldDataPointSource(RMSXEMSXRouteStateIdentifier parent, Field field)
+            internal EMSXFieldDataPointSource(Field field)
             {
-                this.parent = parent;
                 this.field = field;
                 this.value = field.value();
                 this.previousValue = null;
 
-                parent.log("Creating new EMSXFieldDataPointSource for Field: " + field.name() + "\tValue: " + this.value + "\tPrevious Value:" + this.previousValue);
-
-                parent.log("Adding EasyMSX field level notification handler for Field: " + field.name());
                 this.field.addNotificationHandler(this);
-                parent.log("New EMSXFieldDataPointSource created");
-
             }
 
             public override object GetValue()
             {
-                //this.parent.log("Returning value for field " + this.field.name() + "\tValue: " + this.value);
                 return this.value;
             }
 
             public object GetPreviousValue()
             {
-                this.parent.log("Returning previous value for field " + this.field.name() + "\tPrevious Value: " + this.previousValue);
                 return this.previousValue;
             }
 
             public void processNotification(Notification notification)
             {
-                this.parent.log("Handling EasyMSX field notifiction for field " + this.field.name());
-
                 this.previousValue = this.value;
                 this.value = notification.getFieldChanges()[0].newValue;
 
-                this.parent.log("-- Value: " + this.value + "\tPrevious: " + this.previousValue);
-                if (this.previousValue != this.value)
-                {
-                    this.parent.log("-- Values differ - calling SetStale");
-                    this.SetStale();
-                    this.parent.log("-- Returned from SetStale");
-                }
+                if (this.previousValue != this.value) this.SetStale();
             }
         }
 
-        class RouteFillOccurred : RuleEvaluator
+        class RouteNew : RuleEvaluator
         {
-            RMSXEMSXRouteStateIdentifier parent;
-
-            public RouteFillOccurred(RMSXEMSXRouteStateIdentifier parent)
+            public RouteNew()
             {
-                this.parent = parent;
-                this.parent.log("Creating new RouteFillOccurred");
-
-                this.parent.log("Adding dependency for RouteStatus");
                 this.AddDependantDataPointName("RouteStatus");
-                this.parent.log("Adding dependency for RouteFilled");
-                this.AddDependantDataPointName("RouteFilled");
-                this.parent.log("Adding dependency for RouteLastShares");
-                this.AddDependantDataPointName("RouteLastShares");
-                this.parent.log("Done Adding dependencies.");
             }
 
             public override bool Evaluate(DataSet dataSet)
             {
-                this.parent.log("Evaluating RouteFillOccurred...");
-
-                EMSXFieldDataPointSource routeFilledSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteFilled").GetSource();
-                EMSXFieldDataPointSource routeLastSharesSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteLastShares").GetSource();
                 EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
-                GenericIntegerDataPointSource lastfill = (GenericIntegerDataPointSource)dataSet.GetDataPoint("LastFillShown").GetSource();
-
-                int currentFilled = Convert.ToInt32(routeFilledSource.GetValue());
-                int previousFilled = Convert.ToInt32(routeFilledSource.GetPreviousValue());
-
-                int currentLastShares = Convert.ToInt32(routeLastSharesSource.GetValue());
-                int previousLastShares = Convert.ToInt32(routeLastSharesSource.GetPreviousValue());
 
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
-
-                int lastFillShown = Convert.ToInt32(dataSet.GetDataPoint("LastFillShown").GetValue());
-
-                this.parent.log("RouteFillOccurred DataSet values : currentFilled=" + currentFilled + "|previousFilled=" + previousFilled + "|currentLastShares=" + currentLastShares + "|previousLastShares=" + previousLastShares + "|currentStatus=" + currentStatus + "|previousStatus=" + previousStatus);
-
-                bool res = ((currentFilled != previousFilled) && previousStatus != null && currentFilled != lastFillShown);
-
-                this.parent.log("RouteFillOccurred returning value: " + res);
-
-                return res;
+                return (previousStatus == null) && (currentStatus=="SENT");
             }
         }
 
-        class ShowRouteFill : ActionExecutor
+        class ShowRouteState : ActionExecutor
         {
             RMSXEMSXRouteStateIdentifier parent;
-
-            public ShowRouteFill(RMSXEMSXRouteStateIdentifier parent)
+            String state = "";
+            public ShowRouteState(RMSXEMSXRouteStateIdentifier parent, String state)
             {
-                parent.log("Creating new ShowRouteFill action executor.");
                 this.parent = parent;
+                this.state = state;
             }
 
             public void Execute(DataSet dataSet)
             {
-                this.parent.log(">>> ShowRouteFill Action Executor: ");
-                this.parent.log(">>> RouteStatus: " + dataSet.GetDataPoint("RouteStatus").GetValue());
-                this.parent.log(">>> RouteOrderNumber: " + dataSet.GetDataPoint("RouteOrderNumber").GetValue());
-                this.parent.log(">>> RouteID: " + dataSet.GetDataPoint("RouteID").GetValue());
-                this.parent.log(">>> RouteFilled: " + dataSet.GetDataPoint("RouteFilled").GetValue());
-                this.parent.log(">>> RouteAmount: " + dataSet.GetDataPoint("RouteAmount").GetValue());
-                this.parent.log(">>> RouteLastShares: " + dataSet.GetDataPoint("RouteLastShares").GetValue());
-
-                GenericIntegerDataPointSource lastfill = (GenericIntegerDataPointSource)dataSet.GetDataPoint("LastFillShown").GetSource();
-
-                lastfill.setValue(Convert.ToInt32(dataSet.GetDataPoint("RouteFilled").GetValue()));
+                this.parent.log("Route " + dataSet.GetDataPoint("RouteOrderNumber").GetValue() + "." + dataSet.GetDataPoint("RouteID").GetValue() + ": " + this.state);
             }
         }
     }
