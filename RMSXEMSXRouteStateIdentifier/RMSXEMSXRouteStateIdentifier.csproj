@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EasyMSX">
-      <HintPath>..\..\emsxapi_cs_EasyMSX\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
+      <HintPath>..\..\EasyMSXCSharp\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
     </Reference>
     <Reference Include="RuleMSX">
       <HintPath>..\RuleMSX\bin\Debug\RuleMSX.dll</HintPath>

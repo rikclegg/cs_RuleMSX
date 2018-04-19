@@ -110,17 +110,17 @@ namespace RMSXEMSXRouteStateIdentifier
             log("Creating rule for ROUTE_INIT_PAINT_FILLED");
             Rule ruleRouteInitPaintFilled = rsRouteStates.AddRule("RouteInitPaintFilled");
             ruleRouteInitPaintFilled.AddRuleCondition(new RuleCondition("RouteInitPaintFilled", new RouteInitPaintFilled()));
-            ruleRouteInitPaintFilled.AddAction(this.rmsx.CreateAction("ShowRouteFillMulti", new ShowRouteState(this, "Initial paint shows route Filled")));
+            ruleRouteInitPaintFilled.AddAction(this.rmsx.CreateAction("ShowRouteFillMulti", new ShowRouteState(this, "Initial paint shows route filled")));
 
             log("Creating rule for ROUTE_INIT_PAINT_WORKING");
             Rule ruleRouteInitPaintWorking = rsRouteStates.AddRule("RouteInitPaintWorking");
             ruleRouteInitPaintWorking.AddRuleCondition(new RuleCondition("RouteInitPaintWorking", new RouteInitPaintWorking()));
-            ruleRouteInitPaintWorking.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintWorking", new ShowRouteState(this, "Initial paint shows route Working")));
+            ruleRouteInitPaintWorking.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintWorking", new ShowRouteState(this, "Initial paint shows route working")));
 
             log("Creating rule for ROUTE_INIT_PAINT_PARTFILL");
             Rule ruleRouteInitPaintPartfill = rsRouteStates.AddRule("RouteInitPaintPartfill");
             ruleRouteInitPaintPartfill.AddRuleCondition(new RuleCondition("RouteInitPaintPartfill", new RouteInitPaintPartfill()));
-            ruleRouteInitPaintPartfill.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintPartfill", new ShowRouteState(this, "Initial paint shows route Partfilled")));
+            ruleRouteInitPaintPartfill.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintPartfill", new ShowRouteState(this, "Initial paint shows route partfilled")));
 
             log("Creating rule for ROUTE_INIT_PAINT_CANCEL_REQUESTED");
             Rule ruleRouteInitPaintCancelRequested = rsRouteStates.AddRule("RouteInitPaintCancelRequested");
@@ -130,12 +130,12 @@ namespace RMSXEMSXRouteStateIdentifier
             log("Creating rule for ROUTE_CANCEL_REQUESTED_ON_WORKING");
             Rule ruleRouteCancelRequestedOnWorking = rsRouteStates.AddRule("RouteCancelRequestedOnWorking");
             ruleRouteCancelRequestedOnWorking.AddRuleCondition(new RuleCondition("RouteCancelRequestedOnWorking", new RouteCancelRequestedOnWorking()));
-            ruleRouteCancelRequestedOnWorking.AddAction(this.rmsx.CreateAction("ShowRouteCancelRequestedOnWorking", new ShowRouteState(this, "Cancel requested on Working route")));
+            ruleRouteCancelRequestedOnWorking.AddAction(this.rmsx.CreateAction("ShowRouteCancelRequestedOnWorking", new ShowRouteState(this, "Cancel requested on working route")));
 
             log("Creating rule for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_REQUEST");
             Rule ruleRouteCancelRejectedOnWorkingFromRequest = rsRouteStates.AddRule("RouteCancelRejectedOnWorkingFromRequest");
             ruleRouteCancelRejectedOnWorkingFromRequest.AddRuleCondition(new RuleCondition("RouteCancelRejectedOnWorkingFromRequest", new RouteCancelRejectedOnWorkingFromRequest()));
-            ruleRouteCancelRejectedOnWorkingFromRequest.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnWorkingFromRequest", new ShowRouteState(this, "Cancel rejected from request. Back to Working state")));
+            ruleRouteCancelRejectedOnWorkingFromRequest.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnWorkingFromRequest", new ShowRouteState(this, "Cancel rejected from request. Back to working state")));
 
             log("Creating rule for ROUTE_CANCEL_BROKER_ACK");
             Rule ruleRouteCancelBrokerAck = rsRouteStates.AddRule("RouteCancelBrokerAck");
@@ -145,7 +145,7 @@ namespace RMSXEMSXRouteStateIdentifier
             log("Creating rule for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_PENDING");
             Rule ruleRouteCancelRejectedOnWorkingFromPending = rsRouteStates.AddRule("RouteCancelRejectedOnWorkingFromPending");
             ruleRouteCancelRejectedOnWorkingFromPending.AddRuleCondition(new RuleCondition("RouteCancelRejectedOnWorkingFromPending", new RouteCancelRejectedOnWorkingFromPending()));
-            ruleRouteCancelRejectedOnWorkingFromPending.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnWorkingFromPending", new ShowRouteState(this, "Cancel rejected from request. Back to Pending state")));
+            ruleRouteCancelRejectedOnWorkingFromPending.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnWorkingFromPending", new ShowRouteState(this, "Cancel rejected from request. Back to pending state")));
 
             log("Creating rule for ROUTE_CANCEL_FROM_REQUESTED");
             Rule ruleRouteCancelFromRequested = rsRouteStates.AddRule("RouteCancelFromRequested");
@@ -162,62 +162,50 @@ namespace RMSXEMSXRouteStateIdentifier
             ruleRouteCancelRequestedOnPartfill.AddRuleCondition(new RuleCondition("RouteCancelRequestedOnPartfill", new RouteCancelRequestedOnPartfill()));
             ruleRouteCancelRequestedOnPartfill.AddAction(this.rmsx.CreateAction("ShowRouteCancelRequestedOnPartfill", new ShowRouteState(this, "Cancel requested on partfilled route")));
 
+            log("Creating rule for ROUTE_CANCEL_REJECTED_ON_PARTFILL_FROM_REQUEST");
+            Rule ruleRouteCancelRejectedOnPartfillFromRequest = rsRouteStates.AddRule("RouteCancelRejectedOnPartfillFromRequest");
+            ruleRouteCancelRejectedOnPartfillFromRequest.AddRuleCondition(new RuleCondition("RouteCancelRejectedOnPartfillFromRequest", new RouteCancelRejectedOnPartfillFromRequest()));
+            ruleRouteCancelRejectedOnPartfillFromRequest.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnPartfillFromRequest", new ShowRouteState(this, "Cancel rejected from request. Return to partfilled")));
 
-            log("Creating rule condition for ROUTE_CANCEL_REQUESTED_ON_PARTFILL");
+            log("Creating rule for ROUTE_CANCEL_REJECTED_ON_PARTFILL_FROM_PENDING");
+            Rule ruleRouteCancelRejectedOnPartfillFromPending = rsRouteStates.AddRule("RouteCancelRejectedOnPartfillFromPending");
+            ruleRouteCancelRejectedOnPartfillFromPending.AddRuleCondition(new RuleCondition("RouteCancelRejectedOnPartfillFromPending", new RouteCancelRejectedOnPartfillFromPending()));
+            ruleRouteCancelRejectedOnPartfillFromPending.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnPartfillFromPending", new ShowRouteState(this, "Cancel rejected from pending. Return to partfilled")));
 
+            log("Creating rule for ROUTE_MODIFY_REQUESTED_ON_WORKING");
+            Rule ruleRouteModifyRequestedOnWorking = rsRouteStates.AddRule("RouteModifyRequestedOnWorking");
+            ruleRouteModifyRequestedOnWorking.AddRuleCondition(new RuleCondition("RouteModifyRequestedOnWorking", new RouteModifyRequestedOnWorking()));
+            ruleRouteModifyRequestedOnWorking.AddAction(this.rmsx.CreateAction("ShowRouteModifyRequestedOnWorking", new ShowRouteState(this, "Modify requested on working route")));
 
-            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_PARTFILL);
+            log("Creating rule for ROUTE_MODIFY_BROKER_ACK");
+            Rule ruleRouteModifyBrokerAck = rsRouteStates.AddRule("RouteModifyBrokerAck");
+            ruleRouteModifyBrokerAck.AddRuleCondition(new RuleCondition("RouteModifyBrokerAck", new RouteModifyBrokerAck()));
+            ruleRouteModifyBrokerAck.AddAction(this.rmsx.CreateAction("ShowRouteModifyBrokerAck", new ShowRouteState(this, "Modify request acknowledged by broker")));
 
+            log("Creating rule for ROUTE_MODIFY_REJECTED_ON_WORKING");
+            Rule ruleRouteModifyRejectedOnWorking = rsRouteStates.AddRule("RouteModifyRejectedOnWorking");
+            ruleRouteModifyRejectedOnWorking.AddRuleCondition(new RuleCondition("RouteModifyRejectedOnWorking", new RouteModifyRejectedOnWorking()));
+            ruleRouteModifyRejectedOnWorking.AddAction(this.rmsx.CreateAction("ShowRouteModifyRejectedOnWorking", new ShowRouteState(this, "Modify request rejected on working route")));
 
-            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_PARTFILL);
+            log("Creating rule for ROUTE_MODIFY_APPLIED_ON_WORKING");
+            Rule ruleRouteModifyAppliedOnWorking = rsRouteStates.AddRule("RouteModifyAppliedOnWorking");
+            ruleRouteModifyAppliedOnWorking.AddRuleCondition(new RuleCondition("RouteModifyAppliedOnWorking", new RouteModifyAppliedOnWorking()));
+            ruleRouteModifyAppliedOnWorking.AddAction(this.rmsx.CreateAction("ShowRouteModifyAppliedOnWorking", new ShowRouteState(this, "Modify request accepted and applied on working route")));
 
+            log("Creating rule for ROUTE_MODIFY_REQUESTED_ON_PARTFILL");
+            Rule ruleRouteModifyRequestedOnPartfill = rsRouteStates.AddRule("RouteModifyRequestedOnPartfill");
+            ruleRouteModifyRequestedOnPartfill.AddRuleCondition(new RuleCondition("RouteModifyRequestedOnPartfill", new RouteModifyRequestedOnPartfill()));
+            ruleRouteModifyRequestedOnPartfill.AddAction(this.rmsx.CreateAction("ShowRouteModifyRequestedOnPartfill", new ShowRouteState(this, "Modify requested on partfilled route")));
 
-            log("Creating rule condition for ROUTE_MODIFY_REQUESTED_ON_WORKING
+            log("Creating rule for ROUTE_MODIFY_REJECTED_ON_PARTFILL");
+            Rule ruleRouteModifyRejectedOnPartfill = rsRouteStates.AddRule("RouteModifyRejectedOnPartfill");
+            ruleRouteModifyRejectedOnPartfill.AddRuleCondition(new RuleCondition("RouteModifyRejectedOnPartfill", new RouteModifyRejectedOnPartfill()));
+            ruleRouteModifyRejectedOnPartfill.AddAction(this.rmsx.CreateAction("ShowRouteModifyRejectedOnPartfill", new ShowRouteState(this, "Modify request rejected on partfilled route")));
 
-
-            log("Creating rule condition for ROUTE_MODIFY_BROKER_ACK
-
-
-            log("Creating rule condition for ROUTE_MODIFY_REJECTED_ON_WORKING
-
-
-
-            log("Creating rule condition for ROUTE_MODIFY_APPLIED_ON_WORKING
-
-
-
-            log("Creating rule condition for ROUTE_MODIFY_REQUESTED_ON_PARTFILL
-
-
-            log("Creating rule condition for ROUTE_MODIFY_REJECTED_ON_PARTFILL
-
-
-
-            log("Creating rule condition for ROUTE_MODIFY_APPLIED_ON_PARTFILL
-
-
-
-            log("Creating RuleCondition condRouteFillOccurred");
-            RuleCondition condRouteFillOccurred = new RuleCondition("RouteFillOccurred", new RouteFillOccurred(this));
-            log("RuleCondition condRouteFillOccurred created.");
-
-            log("Creating Action actShowRouteFill");
-            Action actShowRouteFill = this.rmsx.CreateAction("ShowRouteFill", new ShowRouteFill(this));
-            log("Action actShowRouteFill created");
-
-            log("Creating RuleSet demoRouteRuleSet");
-            RuleSet demoRouteRuleSet = this.rmsx.CreateRuleSet("DemoRouteRuleSet");
-            log("RuleSet demoRouteRuleSet created");
-
-            log("Creating Rule ruleRouteFilled");
-            Rule ruleRouteFilled = demoRouteRuleSet.AddRule("RouteFilled");
-            log("Rule ruleRouteFilled created");
-
-            log("Assign RuleCondition condRouteFillOccurred to Rule ruleRouteFilled");
-            ruleRouteFilled.AddRuleCondition(condRouteFillOccurred);
-
-            log("Assign Action actShowRouteFill to Rule ruleRouteFilled");
-            ruleRouteFilled.AddAction(actShowRouteFill);
+            log("Creating rule for ROUTE_MODIFY_APPLIED_ON_PARTFILL");
+            Rule ruleRouteModifyAppliedOnPartfill = rsRouteStates.AddRule("RouteModifyAppliedOnPartfill");
+            ruleRouteModifyAppliedOnPartfill.AddRuleCondition(new RuleCondition("RouteModifyAppliedOnPartfill", new RouteModifyAppliedOnPartfill()));
+            ruleRouteModifyAppliedOnPartfill.AddAction(this.rmsx.CreateAction("ShowRouteModifyAppliedOnPartfill", new ShowRouteState(this, "Modify request accepted and applied on partfilled route")));
 
             log("Rules built.");
 
@@ -304,22 +292,6 @@ namespace RMSXEMSXRouteStateIdentifier
             }
         }
 
-        class RouteNew : RuleEvaluator
-        {
-            public RouteNew()
-            {
-                this.AddDependantDataPointName("RouteStatus");
-            }
-
-            public override bool Evaluate(DataSet dataSet)
-            {
-                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
-
-                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
-                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
-                return (previousStatus == null) && (currentStatus=="SENT");
-            }
-        }
 
         class ShowRouteState : ActionExecutor
         {
@@ -336,5 +308,180 @@ namespace RMSXEMSXRouteStateIdentifier
                 this.parent.log("Route " + dataSet.GetDataPoint("RouteOrderNumber").GetValue() + "." + dataSet.GetDataPoint("RouteID").GetValue() + ": " + this.state);
             }
         }
+
+        class RouteNew : RuleEvaluator
+        {
+            public RouteNew()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+                return (previousStatus == null) && (currentStatus == "SENT");
+            }
+        }
+
+
+        class RouteSetWorkingAmount : RuleEvaluator
+        {
+            public RouteSetWorkingAmount()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteWorking");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeWorking = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteWorking").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                int currentWorking = Convert.ToInt32(routeWorking.GetValue());
+                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+
+                return ((previousWorking == 0) && (currentWorking > 0)) && ((previousStatus == "SENT") && (currentStatus == "SENT"));
+            }
+        }
+
+        
+        class RouteNewBrokerAck : RuleEvaluator
+        {
+            public RouteNewBrokerAck()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "SENT") && (currentStatus == "WORKING"));
+            }
+        }
+
+        class RouteFillFirstMulti : RuleEvaluator
+        {
+            public RouteFillFirstMulti()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteWorking");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeWorking = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteWorking").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                int currentWorking = Convert.ToInt32(routeWorking.GetValue());
+                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+
+                return ((previousWorking > currentWorking) && (currentWorking > 0)) && ((previousStatus == "WORKING") && (currentStatus == "PARTFILL"));
+            }
+        }
+
+
+        class RouteFillMulti : RuleEvaluator
+        {
+            public RouteFillMulti()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteWorking");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeWorking = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteWorking").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                int currentWorking = Convert.ToInt32(routeWorking.GetValue());
+                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+
+                return ((previousWorking > currentWorking) && (currentWorking > 0)) && ((previousStatus == "PARTFILL") && (currentStatus == "PARTFILL"));
+            }
+        }
+
+        class RouteFillFinalMulti : RuleEvaluator
+        {
+            public RouteFillFinalMulti()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteWorking");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeWorking = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteWorking").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                int currentWorking = Convert.ToInt32(routeWorking.GetValue());
+                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+
+                return ((previousWorking > 0) && (currentWorking == 0)) && ((previousStatus == "PARTFILL") && (currentStatus == "FILLED"));
+            }
+        }
+
+        class RouteFillFirstFull : RuleEvaluator
+        {
+            public RouteFillFirstFull()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteWorking");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+                EMSXFieldDataPointSource routeWorking = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteWorking").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                int currentWorking = Convert.ToInt32(routeWorking.GetValue());
+                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+
+                return ((previousWorking > 0) && (currentWorking == 0)) && ((previousStatus == "WORKING") && (currentStatus == "FILLED"));
+            }
+        }
+
+
+        class RouteInitPaintFilled : RuleEvaluator
+        {
+            public RouteInitPaintFilled()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+                this.AddDependantDataPointName("RouteWorking");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == null) && (currentStatus == "FILLED"));
+            }
+        }
+
+
     }
 }
