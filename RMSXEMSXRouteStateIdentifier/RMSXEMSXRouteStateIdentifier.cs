@@ -127,25 +127,40 @@ namespace RMSXEMSXRouteStateIdentifier
             ruleRouteInitPaintCancelRequested.AddRuleCondition(new RuleCondition("RouteInitPaintCancelRequested", new RouteInitPaintCancelRequested()));
             ruleRouteInitPaintCancelRequested.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintCancelRequested", new ShowRouteState(this, "Initial paint shows route is awaiting cancel")));
 
-            log("Creating rule condition for ROUTE_INIT_PAINT_CANCEL_REQUESTED");
+            log("Creating rule for ROUTE_CANCEL_REQUESTED_ON_WORKING");
+            Rule ruleRouteCancelRequestedOnWorking = rsRouteStates.AddRule("RouteCancelRequestedOnWorking");
+            ruleRouteCancelRequestedOnWorking.AddRuleCondition(new RuleCondition("RouteCancelRequestedOnWorking", new RouteCancelRequestedOnWorking()));
+            ruleRouteCancelRequestedOnWorking.AddAction(this.rmsx.CreateAction("ShowRouteCancelRequestedOnWorking", new ShowRouteState(this, "Cancel requested on Working route")));
 
+            log("Creating rule for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_REQUEST");
+            Rule ruleRouteCancelRejectedOnWorkingFromRequest = rsRouteStates.AddRule("RouteCancelRejectedOnWorkingFromRequest");
+            ruleRouteCancelRejectedOnWorkingFromRequest.AddRuleCondition(new RuleCondition("RouteCancelRejectedOnWorkingFromRequest", new RouteCancelRejectedOnWorkingFromRequest()));
+            ruleRouteCancelRejectedOnWorkingFromRequest.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnWorkingFromRequest", new ShowRouteState(this, "Cancel rejected from request. Back to Working state")));
 
-            log("Creating rule condition for ROUTE_CANCEL_REQUESTED_ON_WORKING");
+            log("Creating rule for ROUTE_CANCEL_BROKER_ACK");
+            Rule ruleRouteCancelBrokerAck = rsRouteStates.AddRule("RouteCancelBrokerAck");
+            ruleRouteCancelBrokerAck.AddRuleCondition(new RuleCondition("RouteCancelBrokerAck", new RouteCancelBrokerAck()));
+            ruleRouteCancelBrokerAck.AddAction(this.rmsx.CreateAction("ShowRouteCancelBrokerAck", new ShowRouteState(this, "Cancel request acknowledged by broker")));
 
+            log("Creating rule for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_PENDING");
+            Rule ruleRouteCancelRejectedOnWorkingFromPending = rsRouteStates.AddRule("RouteCancelRejectedOnWorkingFromPending");
+            ruleRouteCancelRejectedOnWorkingFromPending.AddRuleCondition(new RuleCondition("RouteCancelRejectedOnWorkingFromPending", new RouteCancelRejectedOnWorkingFromPending()));
+            ruleRouteCancelRejectedOnWorkingFromPending.AddAction(this.rmsx.CreateAction("ShowRouteCancelRejectedOnWorkingFromPending", new ShowRouteState(this, "Cancel rejected from request. Back to Pending state")));
 
-            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_REQUEST");
+            log("Creating rule for ROUTE_CANCEL_FROM_REQUESTED");
+            Rule ruleRouteCancelFromRequested = rsRouteStates.AddRule("RouteCancelFromRequested");
+            ruleRouteCancelFromRequested.AddRuleCondition(new RuleCondition("RouteCancelFromRequested", new RouteCancelFromRequested()));
+            ruleRouteCancelFromRequested.AddAction(this.rmsx.CreateAction("ShowRouteCancelFromRequested", new ShowRouteState(this, "Cancelled from request")));
 
+            log("Creating rule for ROUTE_CANCEL_FROM_PENDING");
+            Rule ruleRouteCancelFromPending = rsRouteStates.AddRule("RouteCancelFromPending");
+            ruleRouteCancelFromPending.AddRuleCondition(new RuleCondition("RouteCancelFromPending", new RouteCancelFromPending()));
+            ruleRouteCancelFromPending.AddAction(this.rmsx.CreateAction("ShowRouteCancelFromPending", new ShowRouteState(this, "Cancelled from pending")));
 
-            log("Creating rule condition for ROUTE_CANCEL_BROKER_ACK");
-
-
-            log("Creating rule condition for ROUTE_CANCEL_REJECTED_ON_WORKING_FROM_PENDING");
-
-
-            log("Creating rule condition for ROUTE_CANCEL_FROM_REQUESTED");
-
-
-            log("Creating rule condition for ROUTE_CANCEL_FROM_PENDING");
+            log("Creating rule for ROUTE_CANCEL_REQUESTED_ON_PARTFILL");
+            Rule ruleRouteCancelRequestedOnPartfill = rsRouteStates.AddRule("RouteCancelRequestedOnPartfill");
+            ruleRouteCancelRequestedOnPartfill.AddRuleCondition(new RuleCondition("RouteCancelRequestedOnPartfill", new RouteCancelRequestedOnPartfill()));
+            ruleRouteCancelRequestedOnPartfill.AddAction(this.rmsx.CreateAction("ShowRouteCancelRequestedOnPartfill", new ShowRouteState(this, "Cancel requested on partfilled route")));
 
 
             log("Creating rule condition for ROUTE_CANCEL_REQUESTED_ON_PARTFILL");
