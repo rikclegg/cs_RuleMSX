@@ -207,6 +207,21 @@ namespace RMSXEMSXRouteStateIdentifier
             ruleRouteModifyAppliedOnPartfill.AddRuleCondition(new RuleCondition("RouteModifyAppliedOnPartfill", new RouteModifyAppliedOnPartfill()));
             ruleRouteModifyAppliedOnPartfill.AddAction(this.rmsx.CreateAction("ShowRouteModifyAppliedOnPartfill", new ShowRouteState(this, "Modify request accepted and applied on partfilled route")));
 
+            log("Creating rule for ROUTE_REJECTED_BY_BROKER");
+            Rule ruleRouteRejectedByBroker = rsRouteStates.AddRule("RouteRejectedByBroker");
+            ruleRouteRejectedByBroker.AddRuleCondition(new RuleCondition("RouteRejectedByBroker", new RouteRejectedByBroker()));
+            ruleRouteRejectedByBroker.AddAction(this.rmsx.CreateAction("ShowRouteRejectedByBroker", new ShowRouteState(this, "Route rejected by broker")));
+
+            log("Creating rule for ROUTE_INIT_PAINT_REJECTED");
+            Rule ruleRouteInitPaintRejected = rsRouteStates.AddRule("RouteInitPaintRejected");
+            ruleRouteInitPaintRejected.AddRuleCondition(new RuleCondition("RouteInitPaintRejected", new RouteInitPaintRejected()));
+            ruleRouteInitPaintRejected.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintRejected", new ShowRouteState(this, "Initial paint shows route rejected")));
+
+            log("Creating rule for ROUTE_INIT_PAINT_CANCEL");
+            Rule ruleRouteInitPaintCancel = rsRouteStates.AddRule("RouteInitPaintCancel");
+            ruleRouteInitPaintCancel.AddRuleCondition(new RuleCondition("RouteInitPaintCancel", new RouteInitPaintCancel()));
+            ruleRouteInitPaintCancel.AddAction(this.rmsx.CreateAction("ShowRouteInitPaintCancel", new ShowRouteState(this, "Initial paint shows route cancelled")));
+
             log("Rules built.");
 
         }
@@ -248,24 +263,25 @@ namespace RMSXEMSXRouteStateIdentifier
                 this.previousValue = null;
 
                 this.field.addNotificationHandler(this);
+
             }
 
             public override object GetValue()
             {
-                return this.value;
+                return this.field.value();
             }
 
             public object GetPreviousValue()
             {
-                return this.previousValue;
+                return this.field.previousValue();
             }
 
             public void processNotification(Notification notification)
             {
-                this.previousValue = this.value;
-                this.value = notification.getFieldChanges()[0].newValue;
+                //this.previousValue = this.value;
+                //this.value = notification.getFieldChanges()[0].newValue;
 
-                if (this.previousValue != this.value) this.SetStale();
+                if (this.field.previousValue() != this.field.value()) this.SetStale();
             }
         }
 
@@ -299,7 +315,8 @@ namespace RMSXEMSXRouteStateIdentifier
 
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
-                return (previousStatus == null) && (currentStatus == "SENT");
+
+                return (previousStatus == "") && (currentStatus == "SENT");
             }
         }
 
@@ -321,7 +338,16 @@ namespace RMSXEMSXRouteStateIdentifier
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
                 int currentWorking = Convert.ToInt32(routeWorking.GetValue());
-                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+
+                int previousWorking = 0;
+
+                try
+                {
+                    previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                } catch
+                {
+                    previousWorking = 0;
+                }
 
                 return ((previousWorking == 0) && (currentWorking > 0)) && ((previousStatus == "SENT") && (currentStatus == "SENT"));
             }
@@ -363,7 +389,16 @@ namespace RMSXEMSXRouteStateIdentifier
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
                 int currentWorking = Convert.ToInt32(routeWorking.GetValue());
-                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                int previousWorking = 0;
+
+                try
+                {
+                    previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                }
+                catch
+                {
+                    previousWorking = 0;
+                }
 
                 return ((previousWorking > currentWorking) && (currentWorking > 0)) && ((previousStatus == "WORKING") && (currentStatus == "PARTFILL"));
             }
@@ -387,7 +422,16 @@ namespace RMSXEMSXRouteStateIdentifier
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
                 int currentWorking = Convert.ToInt32(routeWorking.GetValue());
-                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                int previousWorking = 0;
+
+                try
+                {
+                    previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                }
+                catch
+                {
+                    previousWorking = 0;
+                }
 
                 return ((previousWorking > currentWorking) && (currentWorking > 0)) && ((previousStatus == "PARTFILL") && (currentStatus == "PARTFILL"));
             }
@@ -410,7 +454,16 @@ namespace RMSXEMSXRouteStateIdentifier
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
                 int currentWorking = Convert.ToInt32(routeWorking.GetValue());
-                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                int previousWorking = 0;
+
+                try
+                {
+                    previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                }
+                catch
+                {
+                    previousWorking = 0;
+                }
 
                 return ((previousWorking > 0) && (currentWorking == 0)) && ((previousStatus == "PARTFILL") && (currentStatus == "FILLED"));
             }
@@ -433,7 +486,16 @@ namespace RMSXEMSXRouteStateIdentifier
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
                 int currentWorking = Convert.ToInt32(routeWorking.GetValue());
-                int previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                int previousWorking = 0;
+
+                try
+                {
+                    previousWorking = Convert.ToInt32(routeWorking.GetPreviousValue());
+                }
+                catch
+                {
+                    previousWorking = 0;
+                }
 
                 return ((previousWorking > 0) && (currentWorking == 0)) && ((previousStatus == "WORKING") && (currentStatus == "FILLED"));
             }
@@ -454,7 +516,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
-                return ((previousStatus == null) && (currentStatus == "FILLED"));
+                return ((previousStatus == "") && (currentStatus == "FILLED"));
             }
         }
 
@@ -473,7 +535,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
-                return ((previousStatus == null) && (currentStatus == "WORKING"));
+                return ((previousStatus == "") && (currentStatus == "WORKING"));
             }
         }
 
@@ -492,7 +554,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
-                return ((previousStatus == null) && (currentStatus == "PARTFILL"));
+                return ((previousStatus == "") && (currentStatus == "PARTFILL"));
             }
         }
 
@@ -510,7 +572,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 String currentStatus = Convert.ToString(routeStatusSource.GetValue());
                 String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
 
-                return ((previousStatus == null) && (currentStatus == "CXLREQ"));
+                return ((previousStatus == "") && (currentStatus == "CXLREQ"));
             }
         }
 
@@ -828,5 +890,62 @@ namespace RMSXEMSXRouteStateIdentifier
             }
         }
 
+        class RouteRejectedByBroker : RuleEvaluator
+        {
+            public RouteRejectedByBroker()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "SENT") && (currentStatus == "REJECTED"));
+            }
+        }
+
+        
+
+        class RouteInitPaintRejected : RuleEvaluator
+        {
+            public RouteInitPaintRejected()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "") && (currentStatus == "REJECTED"));
+            }
+        }
+
+        class RouteInitPaintCancel : RuleEvaluator
+        {
+            public RouteInitPaintCancel()
+            {
+                this.AddDependantDataPointName("RouteStatus");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                EMSXFieldDataPointSource routeStatusSource = (EMSXFieldDataPointSource)dataSet.GetDataPoint("RouteStatus").GetSource();
+
+                String currentStatus = Convert.ToString(routeStatusSource.GetValue());
+                String previousStatus = Convert.ToString(routeStatusSource.GetPreviousValue());
+
+                return ((previousStatus == "") && (currentStatus == "CANCEL"));
+            }
+        }
+
+        // Add WORKING->CANCEL and PARTFILL->CANCEL for broker cancel.
     }
 }
