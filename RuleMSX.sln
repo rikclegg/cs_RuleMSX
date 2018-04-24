@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMSXEMSXRouteStateIdentifie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMSXStateTransitionCapture", "EMSXStateTransitionCapture\EMSXStateTransitionCapture.csproj", "{A2CCAE7D-E16B-4863-A048-4C27497E879C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMSXEMSXOrderStateIdentifier", "RMSXEMSXOrderStateIdentifier\RMSXEMSXOrderStateIdentifier.csproj", "{18B00B77-5F20-412A-90E5-FC7A51F3CC3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A2CCAE7D-E16B-4863-A048-4C27497E879C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2CCAE7D-E16B-4863-A048-4C27497E879C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2CCAE7D-E16B-4863-A048-4C27497E879C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18B00B77-5F20-412A-90E5-FC7A51F3CC3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18B00B77-5F20-412A-90E5-FC7A51F3CC3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18B00B77-5F20-412A-90E5-FC7A51F3CC3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18B00B77-5F20-412A-90E5-FC7A51F3CC3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

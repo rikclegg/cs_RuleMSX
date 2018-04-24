@@ -28,13 +28,13 @@ namespace RMSXEMSXRouteStateIdentifier
 
         private void log(String msg)
         {
-            System.Console.WriteLine(DateTime.Now.ToString("yyyyMMddHHmmssfffzzz") + "(RMSXRouteFillTest): \t" + msg);
+            System.Console.WriteLine(DateTime.Now.ToString("yyyyMMddHHmmssfffzzz") + "(RMSXEMSXRouteStateIdentifier): \t" + msg);
         }
 
         private void Run()
         {
 
-            log("RMSXEMSXRouteStateIdentifier - Identify state changes in EMSX routes\n\n");
+            log("RMSXEMSXRouteStateIdentifier - Identify state changes in EMSX routes");
 
             log("Initializing RuleMSX...");
             this.rmsx = new RuleMSX();
@@ -251,7 +251,9 @@ namespace RMSXEMSXRouteStateIdentifier
 
             if (notification.category == Notification.NotificationCategory.ROUTE)
             {
-                if ((notification.type == Notification.NotificationType.NEW) || (notification.type == Notification.NotificationType.INITIALPAINT))
+                //log("Notification for " + notification.getRoute().field("EMSX_SEQUENCE").value() + "." + notification.getRoute().field("EMSX_ROUTE_ID").value());
+                //if ((notification.type == Notification.NotificationType.NEW) || (notification.type == Notification.NotificationType.INITIALPAINT))
+                if (notification.type != Notification.NotificationType.UPDATE)
                 {
                     this.parseRoute(notification.getRoute());
                 }
