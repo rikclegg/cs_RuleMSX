@@ -4,6 +4,7 @@ using com.bloomberg.ioiapi.samples;
 using Action = com.bloomberg.samples.rulemsx.Action;
 using LogRmsx = com.bloomberg.samples.rulemsx.Log;
 using LogIOI = com.bloomberg.ioiapi.samples.Log;
+using System.Threading;
 
 namespace RMSXIOITracking
 {
@@ -26,7 +27,7 @@ namespace RMSXIOITracking
             System.Console.WriteLine("Terminating.");
         }
 
-        private void log(String msg)
+        private static void log(String msg)
         {
             System.Console.WriteLine(DateTime.Now.ToString("yyyyMMddHHmmssfffzzz") + "(RMSXIOITracking..): \t" + msg);
         }
@@ -75,10 +76,25 @@ namespace RMSXIOITracking
             log("Creating RuleSet rsIOITrack");
             RuleSet rsIOITrack = this.rmsx.CreateRuleSet("IOITrack");
 
-            log("Creating rule for IOI_CHANGED");
-            Rule ruleIOIChanged = rsIOITrack.AddRule("IOIChanged");
-            ruleIOIChanged.AddRuleCondition(new RuleCondition("IOIChanged", new IOIChanged()));
-            ruleIOIChanged.AddAction(this.rmsx.CreateAction("ShowIOIChanged", new ShowIOIState(this, "IOI has changed")));
+            log("Creating rule for IOI_NEW");
+            Rule ruleIOINew = rsIOITrack.AddRule("IOIIOINew");
+            ruleIOINew.AddRuleCondition(new RuleCondition("IOINew", new IOINew()));
+            ruleIOINew.AddAction(this.rmsx.CreateAction("ShowIOINew", new ShowIOIState(this, "new IOI")));
+
+            log("Creating rule for IOI_REPLACED");
+            Rule ruleIOIReplaced = rsIOITrack.AddRule("IOIReplaced");
+            ruleIOIReplaced.AddRuleCondition(new RuleCondition("IOIReplaced", new IOIReplaced()));
+            ruleIOIReplaced.AddAction(this.rmsx.CreateAction("ShowIOIReplaced", new ShowIOIState(this, "IOI replaced")));
+
+            log("Creating rule for IOI_CANCELLED");
+            Rule ruleIOICancelled = rsIOITrack.AddRule("IOICancelled");
+            ruleIOICancelled.AddRuleCondition(new RuleCondition("IOICancelled", new IOICancelled()));
+            ruleIOICancelled.AddAction(this.rmsx.CreateAction("ShowIOICancelled", new ShowIOIState(this, "IOI cancelled")));
+
+            log("Creating rule for IOI_EXPIRED");
+            Rule ruleIOIExpired = rsIOITrack.AddRule("IOIExpired");
+            ruleIOIExpired.AddRuleCondition(new RuleCondition("IOIExpired", new IOIExpired()));
+            ruleIOIExpired.AddAction(this.rmsx.CreateAction("ShowIOIExpired", new ShowIOIState(this, "IOI expired")));
 
             log("Rules built.");
 
@@ -100,6 +116,9 @@ namespace RMSXIOITracking
         {
             DataSet newDataSet = this.rmsx.CreateDataSet("DS_IOI_" + i.field("id_value").Value());
             newDataSet.AddDataPoint("handle", new IOIFieldDataPointSource(i, i.field("id_value")));
+            newDataSet.AddDataPoint("change", new IOIFieldDataPointSource(i, i.field("change")));
+            newDataSet.AddDataPoint("ioi_goodUntil", new IOIFieldDataPointSource(i, i.field("ioi_goodUntil")));
+            newDataSet.AddDataPoint("expired", new TimedBoolean(false, DateTime.Parse(i.field("ioi_goodUntil").Value())));
             this.rmsx.GetRuleSet("IOITrack").Execute(newDataSet);
         }
 
@@ -134,6 +153,30 @@ namespace RMSXIOITracking
 
         }
 
+        class TimedBoolean : DataPointSource
+        {
+            bool value;
+            Timer timer;
+
+            internal TimedBoolean(bool initialState, DateTime triggerTime)
+            {
+                TimeSpan ts = triggerTime - DateTime.Now;
+                this.timer = new Timer(trigger,null, (int)ts.TotalMilliseconds,Timeout.Infinite);
+            }
+
+
+            public override object GetValue()
+            {
+                return this.value;
+            }
+
+            public void trigger(object info)
+            {
+                this.value = !this.value;
+                this.SetStale();
+            }
+        }
+
 
         class ShowIOIState : ActionExecutor
         {
@@ -147,26 +190,76 @@ namespace RMSXIOITracking
 
             public void Execute(DataSet dataSet)
             {
-                this.parent.log("IOI " + dataSet.GetDataPoint("handle").GetValue() + ": " + this.state);
+                log("IOI " + dataSet.GetDataPoint("handle").GetValue() + ": " + this.state);
             }
         }
 
-        class IOIChanged : RuleEvaluator
+        class IOINew : RuleEvaluator
         {
-            public IOIChanged()
+            public IOINew()
             {
-                this.AddDependantDataPointName("handle");
+                this.AddDependantDataPointName("change");
             }
 
             public override bool Evaluate(DataSet dataSet)
             {
-                IOIFieldDataPointSource ioiHandleSource = (IOIFieldDataPointSource)dataSet.GetDataPoint("handle").GetSource();
+                IOIFieldDataPointSource ioiChangeSource = (IOIFieldDataPointSource)dataSet.GetDataPoint("change").GetSource();
 
-                String currentHandle = Convert.ToString(ioiHandleSource.GetValue());
-                String previousHandle = Convert.ToString(ioiHandleSource.GetPreviousValue());
+                String currentChange = Convert.ToString(ioiChangeSource.GetValue());
 
-                return (previousHandle != currentHandle);
+                return (currentChange == "New");
             }
         }
+
+        class IOIReplaced : RuleEvaluator
+        {
+            public IOIReplaced()
+            {
+                this.AddDependantDataPointName("change");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                IOIFieldDataPointSource ioiChangeSource = (IOIFieldDataPointSource)dataSet.GetDataPoint("change").GetSource();
+
+                String currentChange = Convert.ToString(ioiChangeSource.GetValue());
+
+                return (currentChange == "Replace");
+            }
+        }
+
+
+        class IOICancelled : RuleEvaluator
+        {
+            public IOICancelled()
+            {
+                this.AddDependantDataPointName("change");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                IOIFieldDataPointSource ioiChangeSource = (IOIFieldDataPointSource)dataSet.GetDataPoint("change").GetSource();
+
+                String currentChange = Convert.ToString(ioiChangeSource.GetValue());
+
+                return (currentChange == "Cancel");
+            }
+        }
+
+        class IOIExpired : RuleEvaluator
+        {
+            public IOIExpired()
+            {
+                this.AddDependantDataPointName("expired");
+            }
+
+            public override bool Evaluate(DataSet dataSet)
+            {
+                TimedBoolean isExpiredSource = (TimedBoolean)dataSet.GetDataPoint("expired").GetSource();
+
+                return (Convert.ToBoolean(isExpiredSource.GetValue()));
+            }
+        }
+
     }
 }
