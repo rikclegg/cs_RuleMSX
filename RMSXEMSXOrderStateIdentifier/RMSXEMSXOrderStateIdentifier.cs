@@ -537,7 +537,7 @@ namespace RMSXEMSXOrderStateIdentifier
         {
             public OrderAmountModifyOnFilled()
             {
-                this.AddDependantDataPointName("OrderStatus");
+                //this.AddDependantDataPointName("OrderStatus");
                 this.AddDependantDataPointName("OrderAmount");
             }
 
@@ -570,7 +570,7 @@ namespace RMSXEMSXOrderStateIdentifier
         {
             public OrderAmountModifyToFilled()
             {
-                this.AddDependantDataPointName("OrderStatus");
+                //this.AddDependantDataPointName("OrderStatus");
                 this.AddDependantDataPointName("OrderAmount");
             }
 

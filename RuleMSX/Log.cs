@@ -41,7 +41,6 @@ namespace com.bloomberg.samples.rulemsx
             if (logLevel == LogLevels.NONE) return;
             if (level == LogLevels.DETAILED && logLevel == LogLevels.BASIC) return;
 
-            DateTime date = DateTime.Now;
             System.Console.WriteLine(DateTime.Now.ToString("yyyyMMddHHmmssfffzzz") + logPrefix + ": \t" + str);
             
         }

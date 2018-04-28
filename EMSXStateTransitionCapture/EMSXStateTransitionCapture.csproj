@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EasyMSX">
-      <HintPath>..\..\EasyMSXCSharp\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
+      <HintPath>..\..\emsxapi_cs_EasyMSX\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
