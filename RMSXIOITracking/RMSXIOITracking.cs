@@ -102,7 +102,8 @@ namespace RMSXIOITracking
             log("Creating rule for IOI_GOODUNTIL");
             Rule ruleIOIGoodUntil = rsIOITrack.AddRule("IOIGoodUntil");
             ruleIOIGoodUntil.AddRuleCondition(new RuleCondition("IOIGoodUntil", new IOIGoodUntil()));
-            ruleIOIGoodUntil.AddAction(this.rmsx.CreateAction("ManagedExpiry", new ManageExpiry()));
+            //ruleIOIGoodUntil.AddAction(this.rmsx.CreateAction("ManagedExpiry", new ManageExpiry()));
+            //ruleIOIGoodUntil.AddAction(this.rmsx.CreateAction("ManagedExpiry", new ManageExpiry()));
 
 
             log("Rules built.");
@@ -285,7 +286,7 @@ namespace RMSXIOITracking
             public override bool Evaluate(DataSet dataSet)
             {
                 IOIFieldDataPointSource goodUntilSource = (IOIFieldDataPointSource)dataSet.GetDataPoint("ioi_goodUntil").GetSource();
-                GenericBoolean expirySource = (GenericBoolean)dataSet.GetDataPoint("expiry").GetSource();
+                GenericBoolean expirySource = (GenericBoolean)dataSet.GetDataPoint("expired").GetSource();
 
                 DateTime currentGoodUntil = Convert.ToDateTime(goodUntilSource.GetValue());
                 DateTime previousGoodUntil = Convert.ToDateTime(goodUntilSource.GetPreviousValue());
