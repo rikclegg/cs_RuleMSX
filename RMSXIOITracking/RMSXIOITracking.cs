@@ -89,6 +89,7 @@ namespace RMSXIOITracking
             log("Creating rule for IOI_CANCELLED");
             Rule ruleIOICancelled = rsIOITrack.AddRule("IOICancelled");
             ruleIOICancelled.AddRuleCondition(new RuleCondition("IOICancelled", new IOICancelled()));
+            ruleIOICancelled.AddAction(this.rmsx.CreateAction("CancelExpiryTimer", new CancelExpiryTimer()));
             ruleIOICancelled.AddAction(this.rmsx.CreateAction("ShowIOICancelled", new ShowIOIState(this, "IOI cancelled")));
 
             // Rule to see it 'expired' in dataset is true. Evaluator has a dependency on datapoint 'expired'
@@ -96,15 +97,6 @@ namespace RMSXIOITracking
             Rule ruleIOIExpired = rsIOITrack.AddRule("IOIExpired");
             ruleIOIExpired.AddRuleCondition(new RuleCondition("IOIExpired", new IOIExpired()));
             ruleIOIExpired.AddAction(this.rmsx.CreateAction("ShowIOIExpired", new ShowIOIState(this, "IOI expired")));
-
-            // Rule to track goodUntil field. If goodUntil changes, calls action to 
-            // manage the Timer object exposed by 'expired' datapointsource 
-            log("Creating rule for IOI_GOODUNTIL");
-            Rule ruleIOIGoodUntil = rsIOITrack.AddRule("IOIGoodUntil");
-            ruleIOIGoodUntil.AddRuleCondition(new RuleCondition("IOIGoodUntil", new IOIGoodUntil()));
-            //ruleIOIGoodUntil.AddAction(this.rmsx.CreateAction("ManagedExpiry", new ManageExpiry()));
-            //ruleIOIGoodUntil.AddAction(this.rmsx.CreateAction("ManagedExpiry", new ManageExpiry()));
-
 
             log("Rules built.");
 
@@ -127,8 +119,7 @@ namespace RMSXIOITracking
             DataSet newDataSet = this.rmsx.CreateDataSet("DS_IOI_" + i.field("id_value").Value());
             newDataSet.AddDataPoint("handle", new IOIFieldDataPointSource(i, i.field("id_value")));
             newDataSet.AddDataPoint("change", new IOIFieldDataPointSource(i, i.field("change")));
-            newDataSet.AddDataPoint("ioi_goodUntil", new IOIFieldDataPointSource(i, i.field("ioi_goodUntil")));
-            newDataSet.AddDataPoint("expired", new GenericBoolean(false));
+            newDataSet.AddDataPoint("ioi_goodUntil", new IOIExpiryDataPointSource(i, i.field("ioi_goodUntil")));
             this.rmsx.GetRuleSet("IOITrack").Execute(newDataSet);
         }
 
@@ -163,31 +154,68 @@ namespace RMSXIOITracking
 
         }
 
-        class GenericBoolean : DataPointSource
+        class IOIExpiryDataPointSource : DataPointSource, NotificationHandler
         {
-            bool value;
+            Field field;
+            String value;
+            Timer timer;
 
-            internal GenericBoolean(bool initialState)
+            internal IOIExpiryDataPointSource(IOI i, Field field)
             {
-                this.value = initialState;
+                this.field = field;
+                this.value = field.Value();
+
+                SetTimer();
+
+                i.addNotificationHandler(this);
             }
 
+            private void SetTimer()
+            {
+                CancelTimer();
+
+                DateTime currentGoodUntil = Convert.ToDateTime(GetValue());
+                TimeSpan ts = currentGoodUntil - DateTime.Now;
+                this.timer = new Timer(this.Trigger, null, (int)ts.TotalMilliseconds, Timeout.Infinite);
+            }
+
+            internal void CancelTimer()
+            {
+                //Cancel current timer
+                if (timer != null) timer.Change(Timeout.Infinite, Timeout.Infinite);
+            }
 
             public override object GetValue()
             {
-                return this.value;
+                return this.field.Value();
             }
 
-            public void SetValue(bool newValue)
+            public object GetPreviousValue()
             {
-                if(this.value != newValue)
-                {
-                    this.value = newValue;
-                    this.SetStale();
-                }
+                return this.field.previousValue();
             }
+
+            public void ProcessNotification(Notification notification)
+            {
+                if (GetPreviousValue() != GetValue()) SetTimer();
+            }
+
+            private void Trigger(object info)
+            {
+                this.SetStale();
+            }
+
         }
 
+        class CancelExpiryTimer : ActionExecutor
+        {
+            public void Execute(DataSet dataSet)
+            {
+                IOIExpiryDataPointSource dps = (IOIExpiryDataPointSource)dataSet.GetDataPoint("ioi_goodUntil").GetSource();
+                dps.CancelTimer();
+
+            }
+        }
 
         class ShowIOIState : ActionExecutor
         {
@@ -261,56 +289,16 @@ namespace RMSXIOITracking
         {
             public IOIExpired()
             {
-                this.AddDependantDataPointName("expired");
-            }
-
-            public override bool Evaluate(DataSet dataSet)
-            {
-                GenericBoolean isExpiredSource = (GenericBoolean)dataSet.GetDataPoint("expired").GetSource();
-
-                return (Convert.ToBoolean(isExpiredSource.GetValue()));
-            }
-        }
-
-        class IOIGoodUntil : RuleEvaluator
-        {
-
-            Timer timer = null;
-
-            public IOIGoodUntil()
-            {
 
                 this.AddDependantDataPointName("ioi_goodUntil");
             }
 
             public override bool Evaluate(DataSet dataSet)
             {
-                IOIFieldDataPointSource goodUntilSource = (IOIFieldDataPointSource)dataSet.GetDataPoint("ioi_goodUntil").GetSource();
-                GenericBoolean expirySource = (GenericBoolean)dataSet.GetDataPoint("expired").GetSource();
-
+                IOIExpiryDataPointSource goodUntilSource = (IOIExpiryDataPointSource)dataSet.GetDataPoint("ioi_goodUntil").GetSource();
                 DateTime currentGoodUntil = Convert.ToDateTime(goodUntilSource.GetValue());
-                DateTime previousGoodUntil = Convert.ToDateTime(goodUntilSource.GetPreviousValue());
-
-                if(previousGoodUntil==null)
-                {
-                    // cancel any existing timer.
-                    if(timer!=null) timer.Change(Timeout.Infinite, Timeout.Infinite);
-                    if(previousGoodUntil != currentGoodUntil)
-                    {
-                        
-                        TimeSpan ts = currentGoodUntil - DateTime.Now;
-                        this.timer = new Timer(this.trigger,expirySource, (int)ts.TotalMilliseconds, Timeout.Infinite);
-
-                    }
-                }
-                return false;
-            }
-
-            internal void trigger(object info)
-            {
-                ((GenericBoolean)info).SetStale();
+                return currentGoodUntil < DateTime.Now;
             }
         }
-
     }
 }
