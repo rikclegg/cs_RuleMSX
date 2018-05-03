@@ -161,7 +161,7 @@ namespace RMSXEMSXOrderStateIdentifier
 
         }
 
-        public void processNotification(Notification notification)
+        public void ProcessNotification(Notification notification)
         {
 
             if (notification.category == Notification.NotificationCategory.ORDER)
@@ -208,7 +208,7 @@ namespace RMSXEMSXOrderStateIdentifier
                 return this.field.previousValue();
             }
 
-            public void processNotification(Notification notification)
+            public void ProcessNotification(Notification notification)
             {
                 if (this.field.previousValue() != this.field.value()) this.SetStale();
             }

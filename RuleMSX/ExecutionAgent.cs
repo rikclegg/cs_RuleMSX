@@ -32,6 +32,7 @@ namespace com.bloomberg.samples.rulemsx
         Thread workingSetAgent;
         volatile bool running = true;
         Queue<DataSet> dataSetQueue = new Queue<DataSet>();
+        Queue<DataSet> purgeQueue = new Queue<DataSet>();
         List<WorkingRule> openSetQueue = new List<WorkingRule>();
         List<WorkingRule> openSet = new List<WorkingRule>();
         static readonly object openSetLock = new object();
@@ -64,6 +65,17 @@ namespace com.bloomberg.samples.rulemsx
             }
         }
 
+        internal void PurgeDataSet(DataSet dataSet)
+        {
+            Log.LogMessage(Log.LogLevels.DETAILED, "Purging DataSet from WorkingSet for RuleSet: " + this.ruleSet.GetName() + " and DataSet: " + dataSet.GetName());
+
+            lock (dataSetLock)
+            {
+                purgeQueue.Enqueue(dataSet);
+            }
+
+        }
+
         internal bool Stop() {
             Log.LogMessage(Log.LogLevels.DETAILED, "Stoping thread for WorkingSetAgent for RuleSet: " + ruleSet.GetName());
             this.running = false;
@@ -91,6 +103,13 @@ namespace com.bloomberg.samples.rulemsx
                     while (dataSetQueue.Count > 0) { 
                         DataSet ds = dataSetQueue.Dequeue();
                         ingestDataSet(ds);
+                    }
+
+                    // Purge DataSets
+                    while (purgeQueue.Count > 0)
+                    {
+                        DataSet ds = purgeQueue.Dequeue();
+                        PurgeFromWorkingSet(ds);
                     }
                 }
 
@@ -159,6 +178,17 @@ namespace com.bloomberg.samples.rulemsx
 
             Log.LogMessage(Log.LogLevels.DETAILED, "Finished Ingesting dataSet " + dataSet.GetName());
 
+        }
+
+        private void PurgeFromWorkingSet(DataSet dataSet)
+        {
+            foreach (WorkingRule wr in workingSet)
+            {
+                if(wr.dataSet == dataSet)
+                {
+                    
+                }
+            }
         }
 
         internal void EnqueueWorkingRule(WorkingRule wr)

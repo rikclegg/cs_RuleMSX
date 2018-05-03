@@ -40,8 +40,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="EasyMSX">
-      <HintPath>..\..\emsxapi_cs_EasyMSX\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
+    <Reference Include="EasyMSX, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\EasyMSXCSharp\EasyMSX\bin\Debug\EasyMSX.dll</HintPath>
     </Reference>
     <Reference Include="RuleMSX">
       <HintPath>..\RuleMSX\bin\Debug\RuleMSX.dll</HintPath>

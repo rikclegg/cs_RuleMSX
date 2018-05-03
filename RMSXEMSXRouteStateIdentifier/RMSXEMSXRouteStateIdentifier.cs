@@ -246,7 +246,7 @@ namespace RMSXEMSXRouteStateIdentifier
 
         }
 
-        public void processNotification(Notification notification)
+        public void ProcessNotification(Notification notification)
         {
 
             if (notification.category == Notification.NotificationCategory.ROUTE)
@@ -296,7 +296,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 return this.field.previousValue();
             }
 
-            public void processNotification(Notification notification)
+            public void ProcessNotification(Notification notification)
             {
                 //this.previousValue = this.value;
                 //this.value = notification.getFieldChanges()[0].newValue;

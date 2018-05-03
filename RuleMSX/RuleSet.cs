@@ -64,5 +64,11 @@ namespace com.bloomberg.samples.rulemsx {
                 this.executionAgent.AddDataSet(dataSet);
             }
         }
+
+        public void PurgeDataSet(DataSet dataSet)
+        {
+            // remove any working rules based on the nominated dataset from the workingset.
+            if (this.executionAgent != null) this.executionAgent.PurgeDataSet(dataSet);
+        }
     }
 }

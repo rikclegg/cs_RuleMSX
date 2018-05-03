@@ -109,12 +109,12 @@ namespace RMSXIOITracking
             {
                 if (notification.type == Notification.NotificationType.NEW)
                 {
-                    this.parseOrder(notification.GetIOI());
+                    this.parseIOI(notification.GetIOI());
                 }
             }
         }
 
-        public void parseOrder(IOI i)
+        public void parseIOI(IOI i)
         {
             DataSet newDataSet = this.rmsx.CreateDataSet("DS_IOI_" + i.field("id_value").Value());
             newDataSet.AddDataPoint("handle", new IOIFieldDataPointSource(i, i.field("id_value")));

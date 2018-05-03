@@ -93,7 +93,7 @@ namespace RMSXEMSXRouteStateIdentifier
 
         }
 
-        public void processNotification(Notification notification)
+        public void ProcessNotification(Notification notification)
         {
 
             log("EasyMSX notification recieved...");
@@ -207,7 +207,7 @@ namespace RMSXEMSXRouteStateIdentifier
                 return this.previousValue;
             }
 
-            public void processNotification(Notification notification)
+            public void ProcessNotification(Notification notification)
             {
                 this.parent.log("Handling EasyMSX field notifiction for field " + this.field.name());
 
