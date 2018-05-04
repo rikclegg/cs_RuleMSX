@@ -1,7 +1,6 @@
 ﻿using System;
 using com.bloomberg.samples.rulemsx;
 using com.bloomberg.emsx.samples;
-using Action = com.bloomberg.samples.rulemsx.Action;
 using System.Globalization;
 using LogRmsx = com.bloomberg.samples.rulemsx.Log;
 

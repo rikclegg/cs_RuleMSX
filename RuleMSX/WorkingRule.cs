@@ -12,7 +12,8 @@ namespace com.bloomberg.samples.rulemsx
         Rule rule;
         internal DataSet dataSet;
         internal List<RuleEvaluator> evaluators = new List<RuleEvaluator>();
-        internal List<ActionExecutor> executors = new List<ActionExecutor>();
+        internal List<ActionExecutor> executorsTrue = new List<ActionExecutor>();
+        internal List<ActionExecutor> executorsFalse = new List<ActionExecutor>();
 
         internal WorkingRule(Rule rule, DataSet dataSet, ExecutionAgent agent) {
             Log.LogMessage(Log.LogLevels.DETAILED, "WorkingRule constructor for Rule: " + rule.GetName() + " and DataSet: " + dataSet.GetName());
@@ -29,7 +30,8 @@ namespace com.bloomberg.samples.rulemsx
             foreach(Action a in rule.GetActions())
             {
                 Log.LogMessage(Log.LogLevels.DETAILED, "Adding Executor for: " + a.GetName());
-                this.executors.Add(a.GetExecutor());
+                if(a.GetActionType()==ActionType.ON_TRUE) this.executorsTrue.Add(a.GetExecutor());
+                else this.executorsFalse.Add(a.GetExecutor());
             }
 
             foreach(RuleCondition c in rule.GetConditions())

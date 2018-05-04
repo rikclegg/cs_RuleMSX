@@ -148,14 +148,18 @@ namespace com.bloomberg.samples.rulemsx
 
                         if (res)
                         {
-                            Log.LogMessage(Log.LogLevels.DETAILED, "All RuleConditions returned true - Executing Actions");
-                            foreach (ActionExecutor ex in wr.executors)
+                            Log.LogMessage(Log.LogLevels.DETAILED, "All RuleConditions returned true - Executing ON_TRUE Actions");
+                            foreach (ActionExecutor ex in wr.executorsTrue)
                             {
                                 ex.Execute(wr.dataSet);
                             }
                         } else
                         {
-                            Log.LogMessage(Log.LogLevels.DETAILED, "Evaluator returned false");
+                            Log.LogMessage(Log.LogLevels.DETAILED, "One or more RuleConditions returned false - Executing ON_FALSE Actions");
+                            foreach (ActionExecutor ex in wr.executorsFalse)
+                            {
+                                ex.Execute(wr.dataSet);
+                            }
                         }
                     }
 
@@ -182,13 +186,14 @@ namespace com.bloomberg.samples.rulemsx
 
         private void PurgeFromWorkingSet(DataSet dataSet)
         {
-            foreach (WorkingRule wr in workingSet)
-            {
-                if(wr.dataSet == dataSet)
-                {
-                    
-                }
-            }
+            // Remove all WorkingRules belonging to the specific DataSet
+
+            List<WorkingRule> removeList = new List<WorkingRule>();
+
+            foreach (WorkingRule wr in workingSet) if (wr.dataSet == dataSet) removeList.Add(wr);
+            foreach (WorkingRule wr in removeList) workingSet.Remove(wr);
+            foreach (WorkingRule wr in openSet) openSet.Remove(wr);
+            foreach (WorkingRule wr in openSetQueue) openSetQueue.Remove(wr);
         }
 
         internal void EnqueueWorkingRule(WorkingRule wr)

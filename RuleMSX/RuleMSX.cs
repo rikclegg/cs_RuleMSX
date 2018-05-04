@@ -87,6 +87,18 @@ namespace com.bloomberg.samples.rulemsx
             return newAction;
         }
 
+        public Action CreateAction(string name, ActionType actionType, ActionExecutor executor)
+        {
+            Log.LogMessage(Log.LogLevels.BASIC, "Creating Action: " + name + " with executor and action type");
+            if (name == null || name == "") throw new ArgumentException("Action name cannot be null or empty");
+            if (executor == null) throw new ArgumentException("ActionExecutor cannot be null");
+            Action newAction = new Action(name, actionType, executor);
+            Log.LogMessage(Log.LogLevels.DETAILED, "Adding new Action " + newAction.GetName() + " to Actions list.");
+            actions.Add(newAction);
+            Log.LogMessage(Log.LogLevels.BASIC, "New Action created: " + newAction.GetName() + " with executor");
+            return newAction;
+        }
+
         public List<DataSet> GetDataSets()
         {
             Log.LogMessage(Log.LogLevels.DETAILED, "Get DataSets");

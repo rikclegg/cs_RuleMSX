@@ -28,7 +28,7 @@ namespace EMSXStateTransitionCapture
             this.emsx.start();
         }
 
-        public void processNotification(Notification notification)
+        public void ProcessNotification(Notification notification)
         {
 
             if (notification.category == Notification.NotificationCategory.ORDER)

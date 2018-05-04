@@ -20,18 +20,41 @@ IN THE SOFTWARE.
 
 namespace com.bloomberg.samples.rulemsx
 {
+    public enum ActionType
+    {
+        ON_TRUE,
+        ON_FALSE
+    }
+
     public class Action
     {
         string name;
+        ActionType actionType;
         ActionExecutor executor;
 
         internal Action(string name)
         {
             this.name = name;
+            this.actionType = ActionType.ON_TRUE;
         }
+
+        internal Action(string name, ActionType actionType)
+        {
+            this.name = name;
+            this.actionType = actionType;
+        }
+
         internal Action(string name, ActionExecutor executor)
         {
             this.name = name;
+            this.actionType = ActionType.ON_TRUE;
+            this.AddExecutor(executor);
+        }
+
+        internal Action(string name, ActionType actionType, ActionExecutor executor)
+        {
+            this.name = name;
+            this.actionType = actionType;
             this.AddExecutor(executor);
         }
 
@@ -48,6 +71,11 @@ namespace com.bloomberg.samples.rulemsx
         public ActionExecutor GetExecutor()
         {
             return this.executor;
+        }
+
+        public ActionType GetActionType()
+        {
+            return this.actionType;
         }
     }
 }
