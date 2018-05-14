@@ -191,9 +191,13 @@ namespace com.bloomberg.samples.rulemsx
             List<WorkingRule> removeList = new List<WorkingRule>();
 
             foreach (WorkingRule wr in workingSet) if (wr.dataSet == dataSet) removeList.Add(wr);
-            foreach (WorkingRule wr in removeList) workingSet.Remove(wr);
-            foreach (WorkingRule wr in openSet) openSet.Remove(wr);
-            foreach (WorkingRule wr in openSetQueue) openSetQueue.Remove(wr);
+
+            foreach (WorkingRule wr in removeList)
+            {
+                workingSet.Remove(wr);
+                openSet.Remove(wr);
+                openSetQueue.Remove(wr);
+            }
         }
 
         internal void EnqueueWorkingRule(WorkingRule wr)
