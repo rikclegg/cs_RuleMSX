@@ -51,7 +51,7 @@ For example:-
 
 Add the RuleCondition to the Rule:-
 
-	myRuleCondition.AddRuleCondition(myRuleCondition);
+	myNewRule.AddRuleCondition(myRuleCondition);
 
 Alternatively:-
 
@@ -74,89 +74,104 @@ For example:-
 
         public MyActionCode()
         {
-            this.parent = parent;
-            this.state = state;
+			// constructor code
         }
 
         public void Execute(DataSet dataSet)
         {
-            this.parent.log("Order " + dataSet.GetDataPoint("OrderNumber").GetValue() + ": " + this.state);
+            // do something here
         }
     }
 
-            ruleOrderNew.AddAction(this.rmsx.CreateAction("ShowOrderNew", new ShowOrderState(this, "New Order")));
+Add the Action to the Rule:-
+
+	myNewRule.AddAction(myAction);
+
+Alternatively:-
+
+	myNewRule.AddAction(rmsx.CreateAction("MyAction", new MyActionCode());
+
+
+The data to be processed in a RuleSet is defined as DataPoints, which are organised into DataSets.
+
+A DataPoint is a single named item of data that has an associated DataPointSource. The DataPointSource is an abstract class that the developer extends, which guarentees the presence of a GetValue() method. Think of the DataSet as an object with properties. Think of the DataSet as a collection of DataPoints, each of which is a key-value pair. 
+
+You submit a DataSet for execution by a RuleSet's execution agent, as follows:-
+
+	myRuleSet.execute(myDataSet);
+
+To create a DataSet:-
+
+	DataSet myDataSet = rmsx.CreateDataSet("<some unique name>");
+
+To create a DataPoint, you first need to create a DataPointSource. This is done by creating a class that extends DataPointSource:-
+
+	private class ConstantDataPointSource : DataPointSource
+    {
+        string retValue;
+
+        public TestDataPointSource(string retValue)
+        {
+            this.retValue = retValue;
+        }
+        public override object GetValue()
+        {
+            return retValue;
+        }
+    }
+
+An instance of this class will return the value that was passed to the constructor whenever the GetValue() method is called.
+
+Create the DataPoint as follows:-
+
+	DataPoint myDataPoint = new ConstantDataPointSource("Return This!");
+
+Add the DataPoint to the DataSet:-
+
+	myDataSet.AddDataPoint("DataPoint1", myDataPoint);
+
+Alternatively:-
+
+	myDataSet.AddDataPoint("DataPoint1", new CoonstantDataPointSource("Return This!"));
+
+
+
+### Operation
+
+The execution agent that underlies a RuleSet operates in its own thread. When a RuleSets Execute() method is first invoked, the execution agent is created. Thereafter, any further calls to Execute() will result in the DataSet simply being passed to the already running agent.
+
+When a DataSet is ingested by the execution agent, all the Rules will be tested. Once a rule is tested, it will not be tested again, unless it is re-introduced. This happens when a RuleCondition within the rule has a declared dependency on a DataPoint whos DataPointSource has been marked as stale. This is done on the client side, by caling SetStale() on a DataPointSource object. Any Rule that has a dependency on that DataPoint will be re-introduced into the queue of Rules to be tested.
+
+This means that a RuleCondition can be created that depends of the value of a variable or field that will change over time. When the rule is first tested, perhaps the value is in a state that means that the Evaluate() method will return False. However, it may change later. The rule will not be tested again under normal circumstances. But if the variable or field changes values, simply call the SetStale() method on the DataPointSource object, and any and all Rules which have a RuleCondition that depends on its value will be re-tested. This means that the RuleCondition may now return True, and the associated ActionExecutor of Rule will be fired.
+
+
+
+### Coding Style
 
 
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Requires .NET 4.0, but has no other external depedencies.
 
-```
-Give examples
-```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+Download the source code, and build the library from source.
 
-Say what the step will be
+### Tests 
 
-```
-Give the example
-```
+NUnit unit tests, as well as integration tests, are included in the project.
 
-And repeat
 
-```
-until finished
-```
+### Deployment
 
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Simply distribute the library with any application distribution.
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Richard Clegg** - *Concept, development and samples* - [rikclegg](https://github.com/rikclegg)
+* **Terrence Kim** - *Testing and samples* - [tkim](https://github.com/tkim)
 
 ## License
 
@@ -164,6 +179,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Prof. Deepak Khemani,Department of Computer Science and Engineering, IIT Madras - [Rete Algorithm](https://www.youtube.com/watch?v=XG1sxRcdQZY)
