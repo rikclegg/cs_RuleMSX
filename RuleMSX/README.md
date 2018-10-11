@@ -49,6 +49,8 @@ For example:-
         }
     }
 
+Note that when the Evaluate() method is called, it is passed a DataSet to operate on.
+
 Add the RuleCondition to the Rule:-
 
 	myNewRule.AddRuleCondition(myRuleCondition);
@@ -82,6 +84,8 @@ For example:-
             // do something here
         }
     }
+
+Note that when the Execute() method of the ActionExecutor is called, it is passed a DataSet to operate on.
 
 Add the Action to the Rule:-
 
@@ -138,12 +142,18 @@ Alternatively:-
 
 ### Operation
 
-The execution agent that underlies a RuleSet operates in its own thread. When a RuleSets Execute() method is first invoked, the execution agent is created. Thereafter, any further calls to Execute() will result in the DataSet simply being passed to the already running agent.
+The execution agent that underlies a RuleSet operates in its own thread. When a RuleSets Execute() method is first invoked, the execution agent is created, and the DataSet is passed to the new agent. Thereafter, any further calls to Execute() will result in the DataSet simply being passed to the already running agent.
 
 When a DataSet is ingested by the execution agent, all the Rules will be tested. Once a rule is tested, it will not be tested again, unless it is re-introduced. This happens when a RuleCondition within the rule has a declared dependency on a DataPoint whos DataPointSource has been marked as stale. This is done on the client side, by caling SetStale() on a DataPointSource object. Any Rule that has a dependency on that DataPoint will be re-introduced into the queue of Rules to be tested.
 
 This means that a RuleCondition can be created that depends of the value of a variable or field that will change over time. When the rule is first tested, perhaps the value is in a state that means that the Evaluate() method will return False. However, it may change later. The rule will not be tested again under normal circumstances. But if the variable or field changes values, simply call the SetStale() method on the DataPointSource object, and any and all Rules which have a RuleCondition that depends on its value will be re-tested. This means that the RuleCondition may now return True, and the associated ActionExecutor of Rule will be fired.
 
+
+### Example
+
+The Rule:-
+
+If a new trade is entered, and the exchange is US, the this order should be sent to broker BRKA. However, if the order is for a LN exchange, then is should be sent to BRKB. Additionally, if the order 
 
 
 ### Coding Style
